@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ONS Eletrotécnica | Sistema de Manutenção Elétrica</title>
+    <meta name="theme-color" content="#0f5a82">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #eef2f7; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .app-container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+        
+        .header-eletrica { background: linear-gradient(135deg, #1a2a3f 0%, #2c3e50 100%); border-radius: 28px; padding: 28px; color: white; position: relative; overflow: hidden; }
+        .header-eletrica::before { content: '⚡'; position: absolute; right: 20px; bottom: 10px; font-size: 80px; opacity: 0.1; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .logo-section h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .logo-section h1 i { color: #efb505; }
+        .module-badge { background: #efb505; color: #1a2a3f; padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-top: 5px; }
+        .btn-modulo-switch { background: rgba(239, 181, 5, 0.2); border: 1px solid #efb505; color: white; padding: 10px 20px; border-radius: 40px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-modulo-switch:hover { background: #efb505; color: #1a2a3f; }
+        
+        .card { background: white; border-radius: 28px; padding: 28px 24px; box-shadow: 0 12px 28px rgba(0,0,0,0.05); }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-left: 5px solid #efb505; padding-left: 18px; }
+        .card-header h2 { font-size: 1.3rem; font-weight: 600; color: #1a2a3f; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: #2c3e50; }
+        input, select, textarea { padding: 12px 16px; border: 1.5px solid #dce5ec; border-radius: 20px; font-size: 0.9rem; outline: none; }
+        input:focus, select:focus, textarea:focus { border-color: #2c3e50; box-shadow: 0 0 0 3px rgba(44,62,80,0.1); }
+        
+        .btn-gold { background: #efb505; border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: #2c3e50; color: white; border: none; padding: 12px 28px; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        .btn-outline { background: transparent; border: 1.5px solid #2c3e50; padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        
+        .menu-tabs { display: flex; gap: 8px; flex-wrap: wrap; background: white; border-radius: 60px; padding: 8px 16px; margin-bottom: 20px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .tab-btn.active { background: linear-gradient(135deg, #1a2a3f, #2c3e50); color: white; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(145deg, white, #f8fafd); padding: 20px; border-radius: 20px; text-align: center; border-bottom: 3px solid #efb505; }
+        .stat-card h3 { font-size: 2rem; color: #1a2a3f; }
+        
+        .item-lista { padding: 15px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .item-lista:hover { background: #f8fafd; border-radius: 16px; }
+        .item-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-acao { padding: 6px 14px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.7rem; cursor: pointer; }
+        .btn-acao.ver { background: #2c3e50; color: white; }
+        .btn-acao.excluir { background: #dc3545; color: white; }
+        .btn-acao.wpp { background: #25D366; color: white; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 10000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 28px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 25px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #efb505; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #dc3545; }
+        
+        .toast-notify { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 600; z-index: 10001; animation: slideInRight 0.3s ease; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        @media (max-width: 768px) { body { padding: 12px; } .card { padding: 20px 16px; } }
+    </style>
+</head>
+<body>
+<div class="app-container">
+   <div class="header-eletrica">
+    <div class="header-content">
+        <div class="logo-section">
+            <h1><i class="fas fa-bolt"></i> ONS Eletrotécnica</h1>
+            <div class="module-badge"><i class="fas fa-check-circle"></i> Módulo Elétrico</div>
+        </div>
+        <div>
+            <a href="index.html" class="btn-modulo-switch">
+                <i class="fas fa-exchange-alt"></i> Trocar Módulo
+            </a>
+        </div>
+    </div>
+    <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.9;">
+        <i class="fas fa-building"></i> CNPJ: 66.326.736/0001-62 | <i class="fas fa-phone"></i> (35) 9 2000-4813 | São Sebastião do Paraíso - MG
+    </div>
+</div>
+
+    <div class="menu-tabs">
+        <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
+        <button class="tab-btn" data-tab="clientes"><i class="fas fa-users"></i> Clientes</button>
+        <button class="tab-btn" data-tab="novaos"><i class="fas fa-plus-circle"></i> Nova OS</button>
+        <button class="tab-btn" data-tab="historico"><i class="fas fa-history"></i> Histórico</button>
+        <button class="tab-btn" data-tab="orcamento"><i class="fas fa-file-invoice"></i> Orçamento</button>
+        <button class="tab-btn" data-tab="relatorios"><i class="fas fa-chart-bar"></i> Relatórios</button>
+        <button class="tab-btn" data-tab="faturamento"><i class="fas fa-file-invoice-dollar"></i> Faturamento</button>
+    </div>
+
+    <div id="dashboard" class="tab-pane active">
+        <div class="card">
+            <div class="card-header"><h2><i class="fas fa-chart-pie"></i> Dashboard</h2></div>
+            <div class="stats-grid" id="statsDashboard">
+                <div class="stat-card"><h3 id="totalClientes">0</h3><p>Clientes</p></div>
+                <div class="stat-card"><h3 id="totalOS">0</h3><p>Ordens Serviço</p></div>
+                <div class="stat-card"><h3 id="totalFinalizadas">0</h3><p>Finalizadas</p></div>
+            </div>
+            <h3>Últimas OS</h3>
+            <div id="ultimasOS"></div>
+        </div>
+    </div>
+
+    <div id="clientes" class="tab-pane">
+        <div class="card">
+            <div class="card-header"><h2><i class="fas fa-user-plus"></i> Cadastro de Clientes</h2></div>
+            <div class="form-grid">
+                <div class="field-group"><label>Nome *</label><input type="text" id="cliNome" placeholder="Ex: João Silva"></div>
+                <div class="field-group"><label>Telefone *</label><input type="text" id="cliTelefone" placeholder="(35) 9 9999-9999"></div>
+                <div class="field-group"><label>Email</label><input type="email" id="cliEmail"></div>
+                <div class="field-group"><label>Endereço</label><input type="text" id="cliEndereco"></div>
+            </div>
+            <div style="display: flex; gap: 12px;"><button class="btn-primary" onclick="salvarCliente()"><i class="fas fa-save"></i> Salvar</button><button class="btn-outline" onclick="limparFormCliente()"><i class="fas fa-eraser"></i> Limpar</button></div>
+            <h3 style="margin-top:30px;">Clientes</h3><div id="listaClientes"></div>
+        </div>
+    </div>
+
+    <div id="novaos" class="tab-pane">
+        <div class="card">
+            <div class="card-header"><h2><i class="fas fa-clipboard-list"></i> Nova OS</h2></div>
+            <div class="form-grid">
+                <div class="field-group"><label>Cliente *</label><select id="osCliente"><option value="">Selecione</option></select></div>
+                <div class="field-group"><label>Equipamento *</label><input type="text" id="osEquipamento" placeholder="Ex: Quadro Geral"></div>
+                <div class="field-group"><label>Defeito</label><textarea id="osDefeito" rows="3"></textarea></div>
+                <div class="field-group"><label>Solução</label><textarea id="osSolucao" rows="3"></textarea></div>
+            </div>
+            <div style="display: flex; gap: 12px;"><button class="btn-primary" onclick="salvarOS()"><i class="fas fa-save"></i> Salvar</button><button class="btn-outline" onclick="limparOS()"><i class="fas fa-trash"></i> Limpar</button></div>
+        </div>
+    </div>
+
+    <div id="historico" class="tab-pane"><div class="card"><div class="card-header"><h2><i class="fas fa-history"></i> Histórico</h2></div><div id="listaHistorico"></div></div></div>
+    <div id="orcamento" class="tab-pane"><div class="card"><div class="card-header"><h2><i class="fas fa-file-invoice"></i> Orçamento</h2></div><div id="orcamentoContent"></div></div></div>
+    <div id="relatorios" class="tab-pane"><div class="card"><div class="card-header"><h2><i class="fas fa-chart-bar"></i> Relatórios</h2></div><div id="relatoriosContent"></div></div></div>
+    <div id="faturamento" class="tab-pane"><div class="card"><div class="card-header"><h2><i class="fas fa-file-invoice-dollar"></i> Faturamento</h2></div><div id="faturamentoContent"></div></div></div>
+</div>
+
+<div id="modalOS" class="modal"><div class="modal-content"><div class="modal-header"><h3>Detalhes</h3><button class="close-modal" onclick="fecharModal()">&times;</button></div><div id="modalBody"></div></div></div>
+
+<script>
+    const SUPABASE_URL = 'https://vckyxwonbpkdeqeoswxc.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZja3l4d29uYnBrZGVxZW9zd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMTY5NjMsImV4cCI6MjA5MTU5Mjk2M30.b5ni_vnIETHVuOs5Cy4982UUBq9Icm-Zc12W1FwQyvI';
+    const MODULO = 'eletrica';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    let clientes = [], ordensServico = [], faturas = [];
+
+    function mostrarToast(msg, tipo = 'sucesso') { const toast = document.createElement('div'); toast.className = 'toast-notify'; toast.style.background = tipo === 'sucesso' ? '#28a745' : '#dc3545'; toast.innerHTML = `<i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
+    function formatarTelefone(v) { v = v.replace(/\D/g, ''); if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3'); else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3'); return v; }
+
+    async function carregarClientes() {
+        try { const { data } = await supabase.from('clientes').select('*').eq('modulo', MODULO).order('nome'); clientes = data || []; renderizarClientes(); carregarSelectClientes(); atualizarDashboard(); } catch(e) { carregarClientesLocal(); } }
+    function carregarClientesLocal() { const saved = localStorage.getItem('ons_eletrica_clientes'); if(saved) clientes = JSON.parse(saved); renderizarClientes(); carregarSelectClientes(); }
+    function salvarClientesLocal() { localStorage.setItem('ons_eletrica_clientes', JSON.stringify(clientes)); }
+
+    async function salvarCliente() {
+        const nome = document.getElementById('cliNome').value.trim();
+        const telefone = document.getElementById('cliTelefone').value.trim();
+        if (!nome || !telefone) { mostrarToast('Preencha nome e telefone!', 'erro'); return; }
+        const novoCliente = { nome, telefone, email: document.getElementById('cliEmail').value, endereco: document.getElementById('cliEndereco').value, modulo: MODULO, data_cadastro: new Date().toISOString() };
+        try { await supabase.from('clientes').insert([novoCliente]); mostrarToast('Cliente salvo!', 'sucesso'); limparFormCliente(); carregarClientes(); } catch(e) { clientes.push({ ...novoCliente, id: Date.now() }); salvarClientesLocal(); mostrarToast('Salvo local!', 'sucesso'); renderizarClientes(); carregarSelectClientes(); }
+    }
+
+    function renderizarClientes() { const container = document.getElementById('listaClientes'); if (!container) return; if (clientes.length === 0) { container.innerHTML = '<div class="item-lista">Nenhum cliente</div>'; return; } container.innerHTML = ''; clientes.forEach(c => { container.innerHTML += `<div class="item-lista"><div><strong>${c.nome}</strong><br><small>${c.telefone}</small></div><div class="item-acoes"><button class="btn-acao excluir" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button></div></div>`; }); }
+    function limparFormCliente() { document.getElementById('cliNome').value = ''; document.getElementById('cliTelefone').value = ''; document.getElementById('cliEmail').value = ''; document.getElementById('cliEndereco').value = ''; }
+    function carregarSelectClientes() { const s = document.getElementById('osCliente'); if(s) { s.innerHTML = '<option value="">Selecione</option>'; clientes.forEach(c => s.innerHTML += `<option value="${c.id}">${c.nome}</option>`); } }
+
+    async function salvarOS() {
+        const clienteId = document.getElementById('osCliente').value;
+        const equipamento = document.getElementById('osEquipamento').value.trim();
+        if (!clienteId || !equipamento) { mostrarToast('Preencha tudo!', 'erro'); return; }
+        const novaOS = { cliente_id: parseInt(clienteId), equipamento, defeito: document.getElementById('osDefeito').value, solucao: document.getElementById('osSolucao').value, modulo: MODULO, status: 'aberto', data_abertura: new Date().toISOString() };
+        try { await supabase.from('ordens_servico').insert([novaOS]); mostrarToast('OS salva!', 'sucesso'); limparOS(); carregarOS(); } catch(e) { novaOS.id = Date.now(); ordensServico.push(novaOS); localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico)); mostrarToast('Salva local!', 'sucesso'); limparOS(); carregarOS(); }
+    }
+
+    async function carregarOS() {
+        try { const { data } = await supabase.from('ordens_servico').select('*, clientes(nome)').eq('modulo', MODULO).order('data_abertura', { ascending: false }); ordensServico = data || []; renderizarHistorico(); carregarSelectFatura(); atualizarDashboard(); } catch(e) { const saved = localStorage.getItem('ons_eletrica_os'); if(saved) ordensServico = JSON.parse(saved); renderizarHistorico(); carregarSelectFatura(); }
+    }
+
+    function renderizarHistorico() {
+        const container = document.getElementById('listaHistorico');
+        if (!container) return;
+        if (ordensServico.length === 0) { container.innerHTML = '<div class="item-lista">Nenhuma OS</div>'; return; }
+        container.innerHTML = '';
+        ordensServico.forEach(os => { container.innerHTML += `<div class="item-lista"><div><strong>#${os.id}</strong> - ${os.clientes?.nome || 'N/A'}<br><small>${os.equipamento}</small></div><div class="item-acoes"><button class="btn-acao ver" onclick="verOS(${os.id})"><i class="fas fa-eye"></i></button><button class="btn-acao excluir" onclick="excluirOS(${os.id})"><i class="fas fa-trash"></i></button><button class="btn-acao wpp" onclick="enviarOSWhatsApp(${os.id})"><i class="fab fa-whatsapp"></i></button></div></div>`; });
+    }
+
+    function limparOS() { document.getElementById('osCliente').value = ''; document.getElementById('osEquipamento').value = ''; document.getElementById('osDefeito').value = ''; document.getElementById('osSolucao').value = ''; }
+
+    async function verOS(id) { const os = ordensServico.find(o => o.id === id); const cliente = clientes.find(c => c.id === os?.cliente_id); document.getElementById('modalBody').innerHTML = `<p><strong>OS #${id}</strong></p><p><strong>Cliente:</strong> ${cliente?.nome}</p><p><strong>Equipamento:</strong> ${os?.equipamento}</p><p><strong>Defeito:</strong> ${os?.defeito || 'N/A'}</p><p><strong>Solução:</strong> ${os?.solucao || 'N/A'}</p><p><strong>Data:</strong> ${new Date(os?.data_abertura).toLocaleString()}</p>`; document.getElementById('modalOS').classList.add('active'); }
+
+    async function excluirOS(id) { if (!confirm('Excluir OS?')) return; try { await supabase.from('ordens_servico').delete().eq('id', id).eq('modulo', MODULO); mostrarToast('OS excluída!', 'sucesso'); carregarOS(); } catch(e) { ordensServico = ordensServico.filter(o => o.id !== id); localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico)); renderizarHistorico(); mostrarToast('Excluída local!', 'sucesso'); } atualizarDashboard(); }
+
+    function enviarOSWhatsApp(id) { const os = ordensServico.find(o => o.id === id); const cliente = clientes.find(c => c.id === os?.cliente_id); if (!cliente?.telefone) { mostrarToast('Telefone não encontrado!', 'erro'); return; } window.open(`https://wa.me/55${cliente.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(`OS #${id} - ${os.equipamento}`)}`, '_blank'); }
+
+    function carregarSelectFatura() { const s = document.getElementById('faturaOS'); if(s) { s.innerHTML = '<option value="">Selecione</option>'; ordensServico.forEach(os => { const c = clientes.find(c => c.id === os.cliente_id); s.innerHTML += `<option value="${os.id}">${c?.nome} - ${os.equipamento}</option>`; }); } }
+
+    function abrirFaturamento() { document.getElementById('faturamentoContent').innerHTML = `<div class="form-group"><label>Selecione a OS</label><select id="faturaOS" onchange="carregarDadosFatura()"><option value="">Selecione</option></select></div><div id="dadosFatura" style="display:none;"><div class="form-group"><label>Documento</label><input type="text" id="numDocumento"></div><div class="form-group"><label>Pagamento</label><select id="formaPagamento"><option>À Vista</option><option>Cartão</option><option>PIX</option></select></div><button class="btn-primary" onclick="salvarFatura()">Salvar Fatura</button><div id="previewFatura"></div></div>`; carregarSelectFatura(); }
+
+    function carregarDadosFatura() { const osId = document.getElementById('faturaOS').value; if(!osId){ document.getElementById('dadosFatura').style.display='none'; return; } document.getElementById('dadosFatura').style.display='block'; document.getElementById('numDocumento').value = `FAT-${osId}-${new Date().getFullYear()}`; }
+
+    function salvarFatura(){ const osId = document.getElementById('faturaOS').value; if(!osId){ mostrarToast('Selecione uma OS!','erro'); return; } const fatura = { os_id: parseInt(osId), modulo: MODULO, numero_documento: document.getElementById('numDocumento').value, forma_pagamento: document.getElementById('formaPagamento').value, status: 'EM ABERTO', data_emissao: new Date().toISOString() }; faturas.push(fatura); localStorage.setItem('ons_eletrica_faturas', JSON.stringify(faturas)); mostrarToast('Fatura salva!','sucesso'); document.getElementById('previewFatura').innerHTML = `<div class="card"><h3>Fatura Gerada</h3><p>Documento: ${fatura.numero_documento}</p><p>Pagamento: ${fatura.forma_pagamento}</p></div>`; }
+
+    async function atualizarDashboard() {
+        document.getElementById('totalClientes').innerHTML = clientes.length;
+        document.getElementById('totalOS').innerHTML = ordensServico.length;
+        document.getElementById('totalFinalizadas').innerHTML = ordensServico.filter(o => o.status === 'finalizado').length;
+        const ultimas = ordensServico.slice(0, 5);
+        const container = document.getElementById('ultimasOS');
+        if (container) { if (ultimas.length === 0) container.innerHTML = '<div class="item-lista">Nenhuma OS recente</div>'; else { container.innerHTML = ''; ultimas.forEach(os => { const c = clientes.find(c => c.id === os.cliente_id); container.innerHTML += `<div class="item-lista"><div><strong>${c?.nome}</strong> - ${os.equipamento}</div><button class="btn-acao ver" onclick="verOS(${os.id})">Ver</button></div>`; }); } }
+    }
+
+    function fecharModal() { document.getElementById('modalOS').classList.remove('active'); }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); btn.classList.add('active'); const tabId = btn.getAttribute('data-tab'); document.getElementById(tabId).classList.add('active'); if (tabId === 'faturamento') abrirFaturamento(); if (tabId === 'relatorios') gerarRelatorios(); }); });
+    document.getElementById('cliTelefone')?.addEventListener('input', e => e.target.value = formatarTelefone(e.target.value));
+
+    function gerarRelatorios() { document.getElementById('relatoriosContent').innerHTML = `<div class="stats-grid"><div class="stat-card"><h3>${ordensServico.length}</h3><p>Total OS</p></div><div class="stat-card"><h3>${clientes.length}</h3><p>Clientes</p></div></div><button class="btn-primary" onclick="exportarRelatorio()">Exportar</button>`; }
+    function exportarRelatorio() { let texto = `RELATÓRIO ONS ELÉTRICA\n${new Date().toLocaleString()}\n\nTotal OS: ${ordensServico.length}\n`; ordensServico.forEach(os => { const c = clientes.find(c => c.id === os.cliente_id); texto += `OS ${os.id} | ${c?.nome} | ${os.equipamento}\n`; }); const blob = new Blob([texto], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `relatorio_eletrica.txt`; link.click(); mostrarToast('Exportado!', 'sucesso'); }
+
+    carregarClientes();
+    carregarOS();
+    console.log('⚡ Eletrotécnica carregado!');
+</script>
+</body>
+</html>
