@@ -1,36 +1,34 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ONS Eletrotécnica - Mac OS Classic</title>
-    <meta name="theme-color" content="#c0c0c0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ONS Eletrotécnica - Windows 95 Classic</title>
+    <meta name="theme-color" content="#008080">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ONS Elétrica">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Sistema de Manutenção e Instalações Elétricas">
+    
+    <link rel="manifest" href="./manifest.json">            
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        @font-face {
-            font-family: 'Chicago';
-            src: local('Chicago'), local('Charcoal'), local('Helvetica Neue');
-        }
-        
-        @font-face {
-            font-family: 'Geneva';
-            src: local('Geneva'), local('Helvetica');
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: default;
         }
 
         body {
-            font-family: 'Chicago', 'Geneva', 'Helvetica Neue', monospace;
-            background: #a0a0a0;
+            font-family: 'Microsoft Sans Serif', 'MS Sans Serif', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #008080;
             min-height: 100vh;
-            padding: 16px;
+            padding: 12px;
         }
 
         body::before {
@@ -40,9 +38,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: linear-gradient(90deg, rgba(128,128,128,0.1) 1px, transparent 1px),
-                              linear-gradient(0deg, rgba(128,128,128,0.1) 1px, transparent 1px);
-            background-size: 8px 8px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="2" cy="2" r="1.5" fill="rgba(0,0,0,0.08)"/><circle cx="20" cy="18" r="1.5" fill="rgba(0,0,0,0.08)"/><circle cx="15" cy="5" r="1" fill="rgba(0,0,0,0.08)"/><circle cx="5" cy="20" r="1" fill="rgba(0,0,0,0.08)"/></svg>');
+            background-repeat: repeat;
             pointer-events: none;
         }
 
@@ -53,134 +50,171 @@
             z-index: 1;
         }
 
-        .menu-bar {
-            background: #e8e8e8;
-            border-top: 1px solid #ffffff;
-            border-bottom: 1px solid #808080;
-            padding: 5px 12px;
-            display: flex;
-            gap: 20px;
+        /* Janela Windows 95 */
+        .win95-window {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             margin-bottom: 16px;
-            box-shadow: inset 0 1px 0 #ffffff;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
         }
 
-        .menu-item {
-            font-family: 'Chicago', monospace;
-            font-size: 12px;
-            font-weight: bold;
-            color: #000000;
-            padding: 2px 8px;
+        .win95-title-bar {
+            background: #000080;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             cursor: default;
         }
 
-        .menu-item:hover {
-            background: #000080;
+        .win95-title-bar-text {
             color: white;
-        }
-
-        .mac-window {
-            background: #e8e8e8;
-            border: 1px solid #000000;
-            border-radius: 8px;
-            box-shadow: 6px 6px 10px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .window-title-bar {
-            background: linear-gradient(180deg, #f0f0f0 0%, #c0c0c0 100%);
-            border-bottom: 1px solid #808080;
-            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .window-controls {
+        .win95-title-buttons {
             display: flex;
-            gap: 5px;
-            margin-right: 8px;
+            gap: 2px;
         }
 
-        .window-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #b0b0b0);
-            border: 1px solid #808080;
-        }
-
-        .window-btn.close { background: radial-gradient(circle at 30% 30%, #ff6b6b, #cc0000); }
-        .window-btn.zoom { background: radial-gradient(circle at 30% 30%, #6bff6b, #00aa00); }
-        .window-btn.collapse { background: radial-gradient(circle at 30% 30%, #ffff6b, #cccc00); }
-
-        .window-title {
-            font-family: 'Chicago', monospace;
-            font-size: 11px;
+        .win95-title-btn {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 10px;
             font-weight: bold;
-            color: #000000;
-            flex: 1;
         }
 
-        .window-content {
-            background: #ffffff;
+        .win95-body {
+            background: #c0c0c0;
             padding: 20px;
-            border-top: 1px solid #ffffff;
-            margin: 1px;
+            border-top: 1px solid #dfdfdf;
         }
 
-        .mac-tabs {
-            background: #e8e8e8;
+        /* Menu de abas */
+        .win95-tabs {
+            background: #c0c0c0;
             display: flex;
-            gap: 0;
+            gap: 2px;
             border-bottom: 1px solid #808080;
-            padding: 0 8px;
-            margin-bottom: 1px;
+            padding: 4px 8px 0 8px;
             flex-wrap: wrap;
         }
 
         .tab-btn {
-            background: linear-gradient(180deg, #d8d8d8 0%, #b8b8b8 100%);
-            border: 1px solid #808080;
-            border-bottom: none;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             padding: 8px 16px;
-            font-family: 'Chicago', monospace;
-            font-size: 10px;
+            font-family: 'Microsoft Sans Serif', sans-serif;
+            font-size: 11px;
             font-weight: bold;
-            margin-right: 2px;
-            margin-top: 3px;
+            margin-right: 3px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #000000;
         }
 
         .tab-btn.active {
             background: #ffffff;
             border-bottom: 1px solid #ffffff;
-            margin-top: 0;
-            padding: 9px 16px 8px 16px;
+            padding-bottom: 9px;
             position: relative;
             z-index: 1;
         }
 
         .tab-pane {
             display: none;
-            background: #ffffff;
-            padding: 0;
+            background: #c0c0c0;
+            padding: 20px;
         }
 
         .tab-pane.active {
             display: block;
         }
 
+        /* Botões */
+        .win95-btn {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            padding: 8px 18px;
+            font-family: 'Microsoft Sans Serif', sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .win95-btn:active {
+            border-top-color: #808080;
+            border-left-color: #808080;
+            border-right-color: #ffffff;
+            border-bottom-color: #ffffff;
+            transform: translate(1px, 1px);
+        }
+
+        .win95-btn-primary {
+            background: #000080;
+            color: white;
+            border-top-color: #4a4aff;
+            border-left-color: #4a4aff;
+        }
+
+        .btn-acao {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Formulários */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
+            margin-bottom: 20px;
         }
 
         .field-group {
@@ -190,90 +224,66 @@
         }
 
         label {
-            font-family: 'Chicago', monospace;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
             color: #000000;
-            text-transform: uppercase;
         }
 
         input, select, textarea {
             background: #ffffff;
-            border: 1px solid #808080;
-            border-radius: 3px;
+            border: 2px solid;
+            border-top-color: #808080;
+            border-left-color: #808080;
+            border-right-color: #ffffff;
+            border-bottom-color: #ffffff;
             padding: 8px 10px;
-            font-family: 'Geneva', monospace;
+            font-family: 'Microsoft Sans Serif', sans-serif;
             font-size: 11px;
             outline: none;
-            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: #000080;
-            background: #fffff0;
+            border: 2px solid #000080;
         }
 
-        .mac-btn {
-            background: linear-gradient(180deg, #e8e8e8 0%, #c0c0c0 100%);
-            border: 1px solid #000000;
-            border-radius: 4px;
-            padding: 8px 20px;
-            font-family: 'Chicago', monospace;
-            font-size: 11px;
-            font-weight: bold;
-            color: #000000;
-            cursor: pointer;
-            box-shadow: inset 1px 1px 0 #ffffff, 1px 1px 0 #808080;
-            transition: all 0.05s linear;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mac-btn:active {
-            box-shadow: inset 1px 1px 0 #808080, 1px 1px 0 #ffffff;
-            transform: translate(1px, 1px);
-        }
-
-        .mac-btn-primary {
-            background: linear-gradient(180deg, #d0d0d0 0%, #a0a0a0 100%);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
+        /* Cards estatísticas */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
-            background: #f0f0f0;
-            border: 1px solid #c0c0c0;
-            border-radius: 6px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             padding: 16px;
             text-align: center;
-            box-shadow: inset 1px 1px 0 #ffffff, 1px 1px 0 #a0a0a0;
         }
 
         .stat-card h3 {
-            font-family: 'Chicago', monospace;
             font-size: 28px;
             font-weight: bold;
             color: #000000;
         }
 
         .stat-card p {
-            font-family: 'Geneva', monospace;
             font-size: 10px;
-            color: #444;
+            color: #333;
             margin-top: 5px;
+        }
+
+        /* Listas */
+        .lista-container {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 16px;
+            border: 2px inset #808080;
+            background: #ffffff;
         }
 
         .item-lista {
@@ -283,35 +293,81 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+            background: #ffffff;
         }
 
         .item-lista:hover {
-            background: #e8e8e8;
+            background: #e0e0e0;
         }
 
-        .item-acoes {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .btn-acao {
-            border: 1px solid #808080;
-            border-radius: 3px;
-            padding: 4px 10px;
-            font-family: 'Chicago', monospace;
-            font-size: 9px;
+        .item-lista-info h4 {
+            font-size: 12px;
             font-weight: bold;
-            cursor: pointer;
-            background: #e8e8e8;
-            box-shadow: inset 1px 1px 0 #ffffff;
+            margin-bottom: 5px;
         }
 
-        .btn-acao:active {
-            transform: translate(1px, 1px);
+        .item-lista-info p {
+            font-size: 10px;
+            color: #444;
         }
 
+        .status-badge {
+            font-size: 9px;
+            padding: 3px 10px;
+            border: 1px solid;
+            font-weight: bold;
+            border-radius: 2px;
+        }
+        .status-andamento { background: #ffcc00; color: #333; }
+        .status-finalizado { background: #33cc33; color: #fff; }
+        .status-aberto { background: #3399ff; color: #fff; }
+        .status-pendente { background: #ff9900; color: #333; }
+
+        /* Subseção */
+        .subsecao {
+            background: #e0e0e0;
+            padding: 20px;
+            border-radius: 0;
+            margin-top: 20px;
+            border: 1px solid #808080;
+        }
+
+        .subsecao h3 {
+            font-size: 12px;
+            margin-bottom: 16px;
+            color: #000;
+        }
+
+        /* Tabelas */
+        .tabela-equipamentos, .tabela-pecas {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border: 2px inset #808080;
+            font-size: 11px;
+        }
+        .tabela-equipamentos th, .tabela-pecas th {
+            background: #000080;
+            color: white;
+            padding: 8px;
+            font-size: 10px;
+        }
+        .tabela-equipamentos td, .tabela-pecas td {
+            border: 1px solid #c0c0c0;
+            padding: 8px;
+        }
+
+        .search-box {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -319,7 +375,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(100,100,100,0.7);
+            background: rgba(0,0,0,0.6);
             z-index: 10000;
             justify-content: center;
             align-items: center;
@@ -330,741 +386,1006 @@
         }
 
         .modal-content {
-            background: #e8e8e8;
-            border: 2px solid #000000;
-            border-radius: 8px;
+            background: #c0c0c0;
+            border: 3px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 8px 8px 16px rgba(0,0,0,0.4);
         }
 
         .modal-header {
-            background: linear-gradient(180deg, #f0f0f0 0%, #c0c0c0 100%);
-            border-bottom: 1px solid #808080;
+            background: #000080;
             padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .close-modal {
-            background: #dc3545;
-            border: 1px solid #000000;
-            border-radius: 4px;
+        .modal-header h3 {
             color: white;
+            font-size: 12px;
+        }
+
+        .close-modal {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             width: 24px;
             height: 24px;
             cursor: pointer;
             font-weight: bold;
         }
 
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Toast */
         .toast-notify {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #e8e8e8;
-            border: 1px solid #000000;
-            border-radius: 6px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
             padding: 10px 20px;
-            font-family: 'Chicago', monospace;
             font-size: 11px;
             font-weight: bold;
             z-index: 10001;
-            box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
         }
 
-        ::-webkit-scrollbar {
-            width: 16px;
+        /* Barra de tarefas */
+        .win95-taskbar {
             background: #c0c0c0;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #c0c0c0;
-            border-left: 1px solid #808080;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #e8e8e8;
-            border: 1px solid #808080;
-            border-radius: 0;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .search-box input {
-            flex: 1;
-        }
-
-        .status-bar {
-            background: #e8e8e8;
-            border-top: 1px solid #c0c0c0;
-            border-bottom: 1px solid #808080;
-            padding: 4px 12px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Geneva', monospace;
-            font-size: 9px;
-            color: #000000;
-        }
-
-        .fatura-item {
-            background: #f8f8f8;
-            border: 1px solid #c0c0c0;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 10px;
+            border-top: 2px solid #ffffff;
+            padding: 4px 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
+
+        .win95-start-btn {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            padding: 4px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* Documento impressão */
+        .documento-empresarial {
+            max-width: 100%;
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            padding: 20px;
+        }
+        
+        .doc-header { text-align: center; padding: 20px 0; border-bottom: 2px solid #000080; margin-bottom: 25px; }
+        .doc-header h1 { color: #000080; font-size: 24px; }
+        .doc-titulo { background: #000080; color: white; padding: 10px; text-align: center; margin: 20px 0; }
+        .section-cliente, .section-equipamento { background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-left: 4px solid #000080; }
+        .tabela-pecas-doc { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .tabela-pecas-doc th { background: #000080; color: white; padding: 8px; }
+        .tabela-pecas-doc td { border: 1px solid #ddd; padding: 8px; }
+        .resumo-valores { background: #f8f9fa; padding: 15px; margin: 20px 0; text-align: right; }
+        .total-geral { font-size: 18px; font-weight: bold; color: #000080; border-top: 2px solid #008080; padding-top: 10px; }
+        .section-pagamento { background: #f0f7ff; padding: 15px; margin: 20px 0; }
 
         @media (max-width: 768px) {
             body { padding: 8px; }
-            .window-content { padding: 12px; }
-            .tab-btn { padding: 6px 10px; font-size: 8px; }
+            .win95-body { padding: 12px; }
+            .tab-btn { padding: 6px 10px; font-size: 9px; }
             .form-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #documento-impressao, #documento-impressao * { visibility: visible; }
+            #documento-impressao { position: absolute; top: 0; left: 0; width: 100%; }
         }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="menu-bar">
-        <span class="menu-item">🍎</span>
-        <span class="menu-item">Arquivo</span>
-        <span class="menu-item">Editar</span>
-        <span class="menu-item">Módulos</span>
-        <span class="menu-item">Janela</span>
-        <span class="menu-item">Ajuda</span>
-    </div>
-
-    <div class="mac-window">
-        <div class="window-title-bar">
-            <div class="window-controls">
-                <div class="window-btn close" onclick="if(confirm('Fechar módulo?')) window.location='index.html'"></div>
-                <div class="window-btn collapse"></div>
-                <div class="window-btn zoom"></div>
+    <!-- Janela Principal -->
+    <div class="win95-window">
+        <div class="win95-title-bar">
+            <div class="win95-title-bar-text">
+                <i class="fas fa-bolt"></i> ONS Eletrotécnica - Sistema de Manutenção Elétrica
             </div>
-            <div class="window-title">⚡ ONS Eletrotécnica - Manutenção Elétrica</div>
-            <div>
-                <a href="index.html" style="text-decoration: none;">
-                    <button class="mac-btn" style="padding: 4px 12px; font-size: 9px;">⇄ Trocar Módulo</button>
-                </a>
+            <div class="win95-title-buttons">
+                <div class="win95-title-btn" onclick="if(confirm('Fechar módulo?')) window.location='index.html'"><i class="fas fa-times"></i></div>
             </div>
         </div>
 
-        <div class="mac-tabs">
+        <!-- Abas - TODAS as originais -->
+        <div class="win95-tabs">
             <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
             <button class="tab-btn" data-tab="clientes"><i class="fas fa-users"></i> Clientes</button>
+            <button class="tab-btn" data-tab="equipamentos"><i class="fas fa-microscope"></i> Equipamentos</button>
             <button class="tab-btn" data-tab="novaos"><i class="fas fa-plus-circle"></i> Nova OS</button>
-            <button class="tab-btn" data-tab="historico"><i class="fas fa-history"></i> Histórico</button>
             <button class="tab-btn" data-tab="orcamento"><i class="fas fa-file-invoice"></i> Orçamento</button>
-            <button class="tab-btn" data-tab="relatorios"><i class="fas fa-chart-bar"></i> Relatórios</button>
             <button class="tab-btn" data-tab="faturamento"><i class="fas fa-file-invoice-dollar"></i> Faturamento</button>
+            <button class="tab-btn" data-tab="historico"><i class="fas fa-history"></i> Histórico</button>
+            <button class="tab-btn" data-tab="relatorios"><i class="fas fa-chart-bar"></i> Relatórios</button>
+            <button class="tab-btn" data-tab="osclientes"><i class="fas fa-mobile-alt"></i> OS Clientes</button>
+            <button class="tab-btn" data-tab="instalacoes"><i class="fas fa-download"></i> Instalações</button>
+            <button class="tab-btn" data-tab="seguranca"><i class="fas fa-shield-alt"></i> Segurança</button>
         </div>
 
-        <div class="window-content">
+        <div class="win95-body">
             <!-- DASHBOARD -->
             <div id="dashboard" class="tab-pane active">
-                <div class="stats-grid" id="statsDashboard">
-                    <div class="stat-card"><h3 id="totalClientes">0</h3><p>Clientes</p></div>
-                    <div class="stat-card"><h3 id="totalOS">0</h3><p>Ordens Serviço</p></div>
-                    <div class="stat-card"><h3 id="totalFinalizadas">0</h3><p>Finalizadas</p></div>
-                    <div class="stat-card"><h3 id="totalFaturado">R$0</h3><p>Faturado</p></div>
+                <div class="stats-grid">
+                    <div class="stat-card"><h3 id="total-clientes">0</h3><p>Clientes Ativos</p></div>
+                    <div class="stat-card"><h3 id="total-os-dash">0</h3><p>Ordens de Serviço</p></div>
+                    <div class="stat-card"><h3 id="total-andamento-dash">0</h3><p>OS em Andamento</p></div>
+                    <div class="stat-card"><h3 id="total-faturas-dash">0</h3><p>Faturas Emitidas</p></div>
                 </div>
+                
+                <div class="btn-group">
+                    <button class="win95-btn win95-btn-primary" onclick="abrirAuditoria()"><i class="fas fa-chart-line"></i> AUDITAR - Resumo Financeiro</button>
+                    <button class="win95-btn" onclick="exportarAuditoriaTXT()"><i class="fas fa-file-alt"></i> Exportar TXT</button>
+                    <button class="win95-btn" onclick="enviarAuditoriaWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Resumo</button>
+                </div>
+                
                 <div style="margin-top: 20px;">
-                    <h3 style="font-family: 'Chicago'; font-size: 12px; margin-bottom: 10px;"><i class="fas fa-clock"></i> Últimas OS</h3>
-                    <div id="ultimasOS"></div>
+                    <h3 style="font-size: 12px; margin-bottom: 12px;"><i class="fas fa-clock"></i> Últimas Ordens de Serviço</h3>
+                    <div class="lista-container" id="lista-recentes"></div>
                 </div>
             </div>
 
             <!-- CLIENTES -->
             <div id="clientes" class="tab-pane">
                 <div class="form-grid">
-                    <div class="field-group"><label><i class="fas fa-user"></i> Nome *</label><input type="text" id="cliNome" placeholder="Ex: João Silva"></div>
-                    <div class="field-group"><label><i class="fas fa-phone"></i> Telefone *</label><input type="text" id="cliTelefone" placeholder="(35) 9 9999-9999"></div>
-                    <div class="field-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="cliEmail"></div>
-                    <div class="field-group"><label><i class="fas fa-map-marker-alt"></i> Endereço</label><input type="text" id="cliEndereco"></div>
+                    <div class="field-group"><label>Nome Completo *</label><input type="text" id="cliente-nome"></div>
+                    <div class="field-group"><label>Telefone *</label><input type="text" id="cliente-telefone" placeholder="(35) 9 2000-4813"></div>
+                    <div class="field-group"><label>E-mail</label><input type="email" id="cliente-email"></div>
+                    <div class="field-group"><label>Endereço</label><input type="text" id="cliente-endereco"></div>
                 </div>
                 <div class="btn-group">
-                    <button class="mac-btn mac-btn-primary" onclick="salvarCliente()"><i class="fas fa-save"></i> Salvar</button>
-                    <button class="mac-btn" onclick="limparFormCliente()"><i class="fas fa-eraser"></i> Limpar</button>
+                    <button class="win95-btn win95-btn-primary" onclick="salvarCliente()"><i class="fas fa-save"></i> Salvar Cliente</button>
+                    <button class="win95-btn" onclick="limparFormCliente()"><i class="fas fa-eraser"></i> Limpar</button>
                 </div>
-                <div style="margin-top: 30px;">
-                    <div class="search-box"><input type="text" id="searchCliente" placeholder="🔍 Buscar cliente..." onkeyup="filtrarClientes()"></div>
-                    <div id="listaClientes"></div>
+                
+                <div class="subsecao" id="secao-equipamentos-cliente" style="display: none;">
+                    <h3><i class="fas fa-tools"></i> Equipamentos do Cliente</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                        <select id="equip-pre-carregado" style="flex: 1.5;">
+                            <option value="">Selecione um equipamento</option>
+                            <option value="Quadro Geral">⚡ Quadro Geral</option>
+                            <option value="Disjuntor">🔌 Disjuntor</option>
+                            <option value="Transformador">⚡ Transformador</option>
+                            <option value="Motor Elétrico">⚙️ Motor Elétrico</option>
+                        </select>
+                        <input type="text" id="equip-fabricante" placeholder="Fabricante" style="flex: 1;">
+                        <input type="text" id="equip-modelo" placeholder="Modelo" style="flex: 1;">
+                        <input type="text" id="equip-numero-serie" placeholder="Nº Série" style="flex: 1;">
+                        <input type="text" id="equip-voltagem" placeholder="Voltagem" style="flex: 0.8;">
+                        <button class="win95-btn" onclick="adicionarEquipamentoCliente()"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                    <table class="tabela-equipamentos">
+                        <thead><tr><th>Equipamento</th><th>Fabricante</th><th>Modelo</th><th>Nº Série</th><th>Voltagem</th><th>Ação</th></tr></thead>
+                        <tbody id="lista-equipamentos-cliente"></tbody>
+                    </table>
+                </div>
+                
+                <h3 style="font-size: 12px; margin: 20px 0 12px 0;">Clientes Cadastrados</h3>
+                <div class="search-box"><input type="text" id="searchCliente" placeholder="Buscar cliente..." onkeyup="filtrarClientes()"></div>
+                <div class="lista-container" id="lista-clientes"></div>
+            </div>
+
+            <!-- EQUIPAMENTOS -->
+            <div id="equipamentos" class="tab-pane">
+                <h3 style="font-size: 12px; margin-bottom: 16px;">Equipamentos Elétricos</h3>
+                <div id="lista-equipamentos-pre" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;"></div>
+                <div class="subsecao">
+                    <h3>Cadastro Rápido</h3>
+                    <div class="field-group"><input type="text" id="equip-manual" placeholder="Digite o nome do equipamento"></div>
+                    <button class="win95-btn" onclick="usarEquipamentoManual()"><i class="fas fa-play"></i> Iniciar OS</button>
                 </div>
             </div>
 
             <!-- NOVA OS -->
             <div id="novaos" class="tab-pane">
                 <div class="form-grid">
-                    <div class="field-group"><label><i class="fas fa-user"></i> Cliente *</label><select id="osCliente"><option value="">Selecione</option></select></div>
-                    <div class="field-group"><label><i class="fas fa-bolt"></i> Equipamento *</label><input type="text" id="osEquipamento" placeholder="Ex: Quadro Geral"></div>
-                    <div class="field-group"><label><i class="fas fa-exclamation-triangle"></i> Defeito</label><textarea id="osDefeito" rows="3"></textarea></div>
-                    <div class="field-group"><label><i class="fas fa-check-circle"></i> Solução</label><textarea id="osSolucao" rows="3"></textarea></div>
-                    <div class="field-group"><label><i class="fas fa-dollar-sign"></i> Valor (R$)</label><input type="text" id="osValor" placeholder="0,00"></div>
+                    <div class="field-group"><label>Cliente</label><select id="os-cliente"><option value="">Selecione um cliente</option></select></div>
+                    <div class="field-group"><label>Equipamento</label><select id="os-equipamento-select" style="display: none;"></select><input type="text" id="os-equipamento" placeholder="Digite o equipamento"></div>
+                    <div class="field-group"><label>Defeito / Problema</label><textarea id="os-defeitos" rows="3"></textarea></div>
+                    <div class="field-group"><label>Solução / Serviço Executado</label><textarea id="os-solucoes" rows="3"></textarea></div>
                 </div>
                 <div class="btn-group">
-                    <button class="mac-btn mac-btn-primary" onclick="salvarOS()"><i class="fas fa-save"></i> Salvar OS</button>
-                    <button class="mac-btn" onclick="limparOS()"><i class="fas fa-trash"></i> Limpar</button>
+                    <button class="win95-btn win95-btn-primary" onclick="salvarOS()"><i class="fas fa-save"></i> Salvar OS</button>
+                    <button class="win95-btn" onclick="limparOS()"><i class="fas fa-trash-alt"></i> Limpar</button>
                 </div>
             </div>
 
-            <!-- HISTÓRICO -->
-            <div id="historico" class="tab-pane">
-                <div class="search-box"><input type="text" id="searchHistorico" placeholder="🔍 Buscar OS..." onkeyup="filtrarHistorico()"></div>
-                <div id="listaHistorico"></div>
+            <!-- ORÇAMENTO - COMPLETO -->
+            <div id="orcamento" class="tab-pane">
+                <h2 class="titulo-secao" style="font-size: 14px; margin-bottom: 16px;"><i class="fas fa-file-invoice"></i> Sistema de Orçamentos</h2>
+                
+                <div class="subsecao">
+                    <h3>📋 Dados do Cliente</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Nome completo *</label><input type="text" id="orcClienteNome"></div>
+                        <div class="field-group"><label>Telefone (WhatsApp) *</label><input type="text" id="orcClienteTelefone" maxlength="19"></div>
+                    </div>
+                </div>
+
+                <div class="subsecao">
+                    <h3>⚙️ Tipo de Serviço</h3>
+                    <div class="service-type-row" style="display: flex; gap: 30px; margin-bottom: 16px;">
+                        <label><input type="radio" name="orcTipoServico" value="manutencao" checked> 🔧 Manutenção</label>
+                        <label><input type="radio" name="orcTipoServico" value="instalacao"> 🛠️ Instalação</label>
+                    </div>
+                </div>
+
+                <div id="orcCamposDinamicos"></div>
+
+                <div class="subsecao">
+                    <h3>📝 Detalhes da Proposta / Atividades</h3>
+                    <textarea id="orcDetalhesProposta" rows="4" style="width: 100%;"></textarea>
+                </div>
+
+                <div class="subsecao">
+                    <h3>🔩 Peças / Componentes</h3>
+                    <div id="orcPecasContainer">
+                        <div class="add-peca-row" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+                            <input type="text" id="orcNomePeca" placeholder="Nome da peça" style="flex: 2;">
+                            <input type="text" id="orcValorPeca" placeholder="Valor unitário (R$)" style="flex: 1;">
+                            <input type="number" id="orcQtdPeca" placeholder="Quantidade" value="1" min="1" style="flex: 1;">
+                            <button class="win95-btn" id="orcBtnAdicionarPeca">+ Adicionar</button>
+                        </div>
+                        <table class="tabela-pecas">
+                            <thead><tr><th>Nome</th><th>Qtd</th><th>Valor Unit.</th><th>Subtotal</th><th></th></tr></thead>
+                            <tbody id="orcCorpoTabelaPecas"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="subsecao">
+                    <h3>👨‍🔧 Mão de Obra</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Valor da mão de obra (R$)</label><input type="text" id="orcMaoDeObra" value="0,00"></div>
+                        <div class="field-group"><label>Informações adicionais</label><input type="text" id="orcCampoExtraManual"></div>
+                    </div>
+                </div>
+
+                <div class="total-box" style="background: #e0e0e0; padding: 20px; text-align: right; margin: 20px 0;">
+                    <div>Total Peças: <span id="orcTotalPecasSpan">R$ 0,00</span></div>
+                    <div style="font-size: 1.5rem;">Total Geral: <span id="orcTotalGeralSpan">R$ 0,00</span></div>
+                </div>
+                
+                <div class="btn-group" style="justify-content: flex-end;">
+                    <button class="win95-btn win95-btn-primary" id="orcBtnGerarOrcamento"><i class="fas fa-file-invoice"></i> GERAR ORÇAMENTO</button>
+                    <button class="win95-btn" id="orcBtnImprimirPDF"><i class="fas fa-print"></i> Imprimir PDF</button>
+                    <button class="win95-btn" id="orcBtnWhatsApp"><i class="fab fa-whatsapp"></i> Enviar WhatsApp</button>
+                </div>
+
+                <div id="orcPreviewOrcamento" style="display: none; background: white; padding: 20px; margin-top: 20px; border: 2px inset #808080;">
+                    <h3>Preview do Orçamento</h3>
+                    <div id="orcPreviewConteudo"></div>
+                </div>
             </div>
 
-            <!-- ORÇAMENTO -->
-            <div id="orcamento" class="tab-pane">
-                <div id="orcamentoContent"></div>
+            <!-- FATURAMENTO - COMPLETO -->
+            <div id="faturamento" class="tab-pane">
+                <div class="field-group">
+                    <label>Selecione a Ordem de Serviço</label>
+                    <select id="faturamento-os-select" onchange="carregarDadosOSFaturamento()">
+                        <option value="">Selecione uma OS</option>
+                    </select>
+                </div>
+                
+                <div id="dados-faturamento" style="display: none;">
+                    <div class="field-group"><label>Número do Documento</label><input type="text" id="num-documento"></div>
+                    
+                    <h3 style="margin: 16px 0 8px 0;"><i class="fas fa-microchip"></i> Peças Utilizadas</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+                        <input type="text" id="peca-nome" placeholder="Nome da peça" style="flex: 2;">
+                        <input type="number" id="peca-valor" placeholder="Valor R$" style="flex: 1;">
+                        <input type="number" id="peca-quantidade" placeholder="Qtd" style="flex: 0.5;" value="1">
+                        <button class="win95-btn" onclick="adicionarPeca()"><i class="fas fa-plus"></i> Adicionar</button>
+                    </div>
+                    
+                    <table class="tabela-pecas">
+                        <thead><tr><th>Peça</th><th>Quantidade</th><th>Valor Unit.</th><th>Subtotal</th><th>Ação</th></tr></thead>
+                        <tbody id="lista-pecas-body"></tbody>
+                    </table>
+                    
+                    <h3 style="margin: 16px 0 8px 0;"><i class="fas fa-user-cog"></i> Mão de Obra</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Valor da Hora Técnica (R$)</label><input type="number" id="valor-hora" value="80.00" step="0.01"></div>
+                        <div class="field-group"><label>Horas Trabalhadas</label><input type="number" id="horas-trabalhadas" value="2" step="0.5"></div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Forma de Exibição dos Valores</label>
+                        <div style="display: flex; gap: 20px; margin-top: 5px;">
+                            <label><input type="radio" name="forma-exibicao" value="somado" checked onchange="atualizarDocumento()"> Valor Único</label>
+                            <label><input type="radio" name="forma-exibicao" value="discriminado" onchange="atualizarDocumento()"> Valores Discriminados</label>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 16px 0 8px 0;"><i class="fas fa-credit-card"></i> Forma de Pagamento</h3>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px;">
+                        <label><input type="radio" name="pagamento-tipo" value="vista" checked onchange="atualizarDocumento()"> À Vista</label>
+                        <label><input type="radio" name="pagamento-tipo" value="cartao" onchange="atualizarDocumento()"> Cartão</label>
+                        <label><input type="radio" name="pagamento-tipo" value="pix" onchange="togglePixCampo()"> PIX</label>
+                        <label><input type="radio" name="pagamento-tipo" value="boleto" onchange="atualizarDocumento()"> Boleto</label>
+                        <label><input type="radio" name="pagamento-tipo" value="prazo" onchange="atualizarDocumento()"> Prazo (30 dias)</label>
+                    </div>
+                    
+                    <div id="campo-pix-container" style="display: none;">
+                        <div class="field-group"><label>Chave PIX</label><input type="text" id="pix-chave"></div>
+                    </div>
+                    
+                    <div class="field-group"><label>Observações sobre pagamento</label><textarea id="obs-pagamento" rows="2"></textarea></div>
+                    
+                    <div class="btn-group">
+                        <button class="win95-btn win95-btn-primary" onclick="salvarFatura()"><i class="fas fa-save"></i> Salvar Fatura</button>
+                        <button class="win95-btn" onclick="imprimirDocumento()"><i class="fas fa-print"></i> Imprimir</button>
+                        <button class="win95-btn" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar WhatsApp</button>
+                    </div>
+                    
+                    <div class="preview-container" style="margin-top: 20px; background: white; padding: 16px; border: 2px inset #808080;">
+                        <h3>Prévia do Documento</h3>
+                        <div id="preview-documento"></div>
+                    </div>
+                    
+                    <div id="documento-impressao" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO COM ABAS -->
+            <div id="historico" class="tab-pane">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <button class="win95-btn active" onclick="mostrarAbaHistorico('os')">Ordens de Serviço</button>
+                    <button class="win95-btn" onclick="mostrarAbaHistorico('faturas')">Faturas</button>
+                </div>
+                <div id="historico-os">
+                    <div class="search-box"><input type="text" id="searchHistoricoOS" placeholder="Buscar OS..." onkeyup="filtrarHistoricoOS()"></div>
+                    <div class="lista-container" id="lista-historico"></div>
+                </div>
+                <div id="historico-faturas" style="display: none;">
+                    <div class="lista-container" id="lista-historico-faturas"></div>
+                </div>
             </div>
 
             <!-- RELATÓRIOS -->
             <div id="relatorios" class="tab-pane">
-                <div id="relatoriosContent"></div>
+                <div class="lista-container" id="lista-todas-os"></div>
             </div>
 
-            <!-- FATURAMENTO -->
-            <div id="faturamento" class="tab-pane">
-                <div id="faturamentoContent"></div>
+            <!-- OS CLIENTES -->
+            <div id="osclientes" class="tab-pane">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3 id="total-os-clientes">0</h3><p>Total de OS</p></div>
+                    <div class="stat-card"><h3 id="total-os-andamento">0</h3><p>Em Andamento</p></div>
+                    <div class="stat-card"><h3 id="total-os-finalizadas">0</h3><p>Finalizadas</p></div>
+                </div>
+                <div class="btn-group">
+                    <button class="win95-btn win95-btn-primary" onclick="carregarOSClientes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    <button class="win95-btn" onclick="enviarMsgParaTodos()"><i class="fab fa-whatsapp"></i> Mensagem em Massa</button>
+                </div>
+                <div class="lista-container" id="lista-os-clientes"></div>
+            </div>
+
+            <!-- INSTALAÇÕES -->
+            <div id="instalacoes" class="tab-pane">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3 id="total-instalacoes">0</h3><p>Total de Instalações</p></div>
+                    <div class="stat-card"><h3 id="total-ativos">0</h3><p>Apps Ativos</p></div>
+                    <div class="stat-card"><h3 id="total-unicos">0</h3><p>Clientes Únicos</p></div>
+                </div>
+                <div class="lista-container" id="lista-instalacoes">
+                    <div class="item-lista" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-database" style="font-size: 3rem;"></i>
+                        <h3>Módulo de Instalações</h3>
+                        <p>Configure a tabela no Supabase para rastrear instalações</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGURANÇA -->
+            <div id="seguranca" class="tab-pane">
+                <div class="stat-card">
+                    <h3>Status da Conexão</h3>
+                    <div id="status-conexao">✅ Conectado ao Supabase</div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="status-bar">
-            <span>💾 Dados sincronizados</span>
-            <span>⚡ Módulo Elétrica v2.0</span>
-            <span>📅 1995 - ONS Sistemas</span>
+    <!-- Barra de Tarefas -->
+    <div class="win95-taskbar">
+        <div class="win95-start-btn" onclick="alert('ONS Eletrotécnica v2.0\nSistema de Manutenção Elétrica\n\n© 2024 - Todos os direitos reservados')">
+            <span style="font-weight: bold;">▶</span>
+            <span>Iniciar</span>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <i class="fas fa-hdd"></i> <span id="statusConexaoBar">Online</span>
+            <div id="relogio" style="background: #c0c0c0; border: 1px solid #808080; padding: 2px 8px; font-family: monospace; font-size: 11px;"></div>
         </div>
     </div>
 </div>
 
+<!-- Modais -->
 <div id="modalOS" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3 style="font-family: 'Chicago';">📋 Detalhes da OS</h3>
-            <button class="close-modal" onclick="fecharModal()">✕</button>
-        </div>
-        <div style="padding: 20px;" id="modalBody"></div>
+        <div class="modal-header"><h3>Detalhes</h3><button class="close-modal" onclick="fecharModal()">✕</button></div>
+        <div class="modal-body" id="modal-body"></div>
     </div>
 </div>
 
-<div id="modalFatura" class="modal">
+<div id="modalAuditoria" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3 style="font-family: 'Chicago';">💰 Gerar Fatura</h3>
-            <button class="close-modal" onclick="fecharModalFatura()">✕</button>
-        </div>
-        <div style="padding: 20px;" id="modalFaturaBody"></div>
+        <div class="modal-header"><h3>Auditoria Financeira</h3><button class="close-modal" onclick="fecharModalAuditoria()">✕</button></div>
+        <div class="modal-body" id="conteudo-auditoria"></div>
     </div>
 </div>
 
 <script>
+    // ==================== CONFIGURAÇÕES ====================
     const SUPABASE_URL = 'https://vckyxwonbpkdeqeoswxc.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZja3l4d29uYnBrZGVxZW9zd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMTY5NjMsImV4cCI6MjA5MTU5Mjk2M30.b5ni_vnIETHVuOs5Cy4982UUBq9Icm-Zc12W1FwQyvI';
-    const MODULO = 'eletrica';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     
-    let clientes = [], ordensServico = [], faturas = [];
-    let clientesFiltrados = [], osFiltradas = [];
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Dados globais
+    let clientes = [];
+    let manutencoes = [];
+    let osClientes = [];
+    let faturas = [];
+    let equipamentosLista = ['Quadro Geral', 'Disjuntor', 'Transformador', 'Motor Elétrico', 'Cabo Elétrico', 'Tomada', 'Interruptor', 'Sensor de Presença', 'Dimmer', 'Estabilizador', 'No-break', 'Aterramento'];
+    
+    // Dados do faturamento
+    let pecasUtilizadas = [];
+    let osSelecionadaFatura = null;
+    let clienteSelecionadoId = null;
 
-    function mostrarToast(msg, tipo = 'sucesso') {
+    // Dados do orçamento
+    let orcListaPecas = [];
+    let orcCurrentServiceType = "manutencao";
+    let orcUltimoOrcamentoHtml = '';
+
+    // ==================== FUNÇÕES AUXILIARES ====================
+    function mostrarNotificacao(msg, tipo = 'sucesso') {
         const toast = document.createElement('div');
         toast.className = 'toast-notify';
         toast.style.background = tipo === 'sucesso' ? '#d4e8d4' : '#e8d4d4';
-        toast.style.borderLeft = tipo === 'sucesso' ? '4px solid #28a745' : '4px solid #dc3545';
-        toast.innerHTML = `<i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-circle'}" style="margin-right: 8px;"></i> ${msg}`;
+        toast.style.borderLeft = tipo === 'sucesso' ? '4px solid #008080' : '4px solid #cc0000';
+        toast.innerHTML = `<i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
+    
+    function fecharModal() { document.getElementById('modalOS').classList.remove('active'); }
+    function fecharModalAuditoria() { document.getElementById('modalAuditoria').classList.remove('active'); }
+    
+    function togglePixCampo() {
+        const pixRadio = document.querySelector('input[name="pagamento-tipo"][value="pix"]');
+        const campoPix = document.getElementById('campo-pix-container');
+        if (pixRadio && pixRadio.checked) campoPix.style.display = 'block';
+        else campoPix.style.display = 'none';
+        atualizarDocumento();
+    }
 
-    function formatMoney(v) { 
-        if (!v) return 'R$ 0,00';
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v); 
+    function formatMoney(value) {
+        if (value === undefined || value === null) return 'R$ 0,00';
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    }
+
+    function parseMoneyToFloat(str) {
+        if (!str) return 0;
+        let cleaned = str.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+        let num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
     }
     
-    function parseMoney(str) { 
-        if (!str) return 0; 
-        return parseFloat(str.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0; 
+    function formatarTelefone(v) {
+        v = v.replace(/\D/g, '');
+        if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        return v;
     }
     
-    function formatarTelefone(v) { 
-        v = v.replace(/\D/g, ''); 
-        if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3'); 
-        else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3'); 
-        return v; 
-    }
-
-    // ========== CLIENTES ==========
-    async function carregarClientes() {
-        try {
-            const { data } = await supabase.from('clientes').select('*').eq('modulo', MODULO).order('nome');
-            clientes = data || [];
-            clientesFiltrados = [...clientes];
-            renderizarClientes();
-            carregarSelectClientes();
-            atualizarDashboard();
-        } catch(e) { carregarClientesLocal(); }
-    }
-
-    function carregarClientesLocal() { 
-        const saved = localStorage.getItem('ons_eletrica_clientes'); 
-        if(saved) clientes = JSON.parse(saved);
-        clientesFiltrados = [...clientes];
-        renderizarClientes(); 
-        carregarSelectClientes(); 
+    // ==================== DADOS LOCAIS ====================
+    function carregarDadosLocais() {
+        const clientesSalvos = localStorage.getItem('ons_eletrica_clientes');
+        const manutencoesSalvas = localStorage.getItem('ons_eletrica_manutencoes');
+        const faturasSalvas = localStorage.getItem('ons_eletrica_faturas');
+        
+        if (clientesSalvos) clientes = JSON.parse(clientesSalvos);
+        if (manutencoesSalvas) manutencoes = JSON.parse(manutencoesSalvas);
+        if (faturasSalvas) faturas = JSON.parse(faturasSalvas);
     }
     
-    function salvarClientesLocal() { localStorage.setItem('ons_eletrica_clientes', JSON.stringify(clientes)); }
+    function salvarClientes() { localStorage.setItem('ons_eletrica_clientes', JSON.stringify(clientes)); }
+    function salvarManutencoes() { localStorage.setItem('ons_eletrica_manutencoes', JSON.stringify(manutencoes)); }
+    function salvarFaturas() { localStorage.setItem('ons_eletrica_faturas', JSON.stringify(faturas)); }
 
-    async function salvarCliente() {
-        const nome = document.getElementById('cliNome').value.trim();
-        const telefone = document.getElementById('cliTelefone').value.trim();
-        if (!nome || !telefone) { mostrarToast('Preencha nome e telefone!', 'erro'); return; }
-        const novoCliente = { nome, telefone, email: document.getElementById('cliEmail').value, endereco: document.getElementById('cliEndereco').value, modulo: MODULO, data_cadastro: new Date().toISOString() };
-        try {
-            await supabase.from('clientes').insert([novoCliente]);
-            mostrarToast('Cliente salvo com sucesso!', 'sucesso');
-            limparFormCliente();
-            carregarClientes();
-        } catch(e) { 
-            novoCliente.id = Date.now();
-            clientes.push(novoCliente); 
-            salvarClientesLocal(); 
-            mostrarToast('Salvo localmente!', 'sucesso'); 
-            renderizarClientes(); 
-            carregarSelectClientes(); 
+    // ==================== ORÇAMENTO FUNCTIONS ====================
+    function orcMascaraTelefone(valor) {
+        valor = valor.replace(/\D/g, '');
+        if (valor.length <= 10) valor = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        else valor = valor.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        return valor;
+    }
+
+    function orcAtualizarTotais() {
+        let totalPecas = orcListaPecas.reduce((acc, p) => acc + (p.valor * p.quantidade), 0);
+        let maoDeObraVal = parseMoneyToFloat(document.getElementById('orcMaoDeObra')?.value || '0');
+        document.getElementById('orcTotalPecasSpan').innerText = formatMoney(totalPecas);
+        let geral = totalPecas + maoDeObraVal;
+        document.getElementById('orcTotalGeralSpan').innerText = formatMoney(geral);
+        return { totalPecas, maoDeObraVal, geral };
+    }
+
+    function orcRenderTabelaPecas() {
+        const corpo = document.getElementById('orcCorpoTabelaPecas');
+        if (!corpo) return;
+        corpo.innerHTML = '';
+        orcListaPecas.forEach((peca, idx) => {
+            let subtotal = peca.valor * peca.quantidade;
+            let row = corpo.insertRow();
+            row.insertCell(0).innerText = peca.nome;
+            row.insertCell(1).innerText = peca.quantidade;
+            row.insertCell(2).innerText = formatMoney(peca.valor);
+            row.insertCell(3).innerText = formatMoney(subtotal);
+            let btnCell = row.insertCell(4);
+            let removerBtn = document.createElement('button');
+            removerBtn.innerText = '✖';
+            removerBtn.className = 'win95-btn';
+            removerBtn.style.padding = '2px 8px';
+            removerBtn.onclick = () => { orcListaPecas.splice(idx, 1); orcRenderTabelaPecas(); orcAtualizarTotais(); };
+            btnCell.appendChild(removerBtn);
+        });
+        orcAtualizarTotais();
+    }
+
+    function orcRenderizarCamposDinamicos() {
+        const tipo = orcCurrentServiceType;
+        const container = document.getElementById('orcCamposDinamicos');
+        if (tipo === 'manutencao') {
+            container.innerHTML = `
+                <div class="subsecao">
+                    <h3>🔧 Dados da Manutenção</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Nome do Equipamento</label><input type="text" id="orcManutEquipamento" placeholder="Ex: Quadro Geral"></div>
+                        <div class="field-group"><label>Modelo</label><input type="text" id="orcManutModelo"></div>
+                        <div class="field-group"><label>Número de Série</label><input type="text" id="orcManutSerie"></div>
+                        <div class="field-group"><label>Defeito relatado</label><textarea id="orcManutDefeito" rows="3"></textarea></div>
+                        <div class="field-group"><label>Solução / Correção aplicada</label><textarea id="orcManutSolucao" rows="3"></textarea></div>
+                    </div>
+                    <div style="background: #fef9e6; padding: 16px; margin-top: 16px;">
+                        <label style="font-weight:bold;">✅ Garantia do Serviço</label>
+                        <div style="display: flex; gap: 20px; margin-top: 8px;">
+                            <label><input type="radio" name="orcGarantiaServico" value="3 meses"> 3 Meses</label>
+                            <label><input type="radio" name="orcGarantiaServico" value="6 meses"> 6 Meses</label>
+                            <label><input type="radio" name="orcGarantiaServico" value="1 ano"> 1 Ano</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="subsecao">
+                    <h3>🛠️ Dados da Instalação</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Tipo de Instalação</label><select id="orcInstalTipo"><option>Equipamento Novo</option><option>Segunda Mão</option><option>Remontagem</option></select></div>
+                        <div class="field-group"><label>Nome do Equipamento</label><input type="text" id="orcInstalEquipamento"></div>
+                        <div class="field-group"><label>Modelo</label><input type="text" id="orcInstalModelo"></div>
+                        <div class="field-group"><label>Número de Série</label><input type="text" id="orcInstalSerie"></div>
+                        <div class="field-group"><label>Fabricante</label><input type="text" id="orcInstalFabricante"></div>
+                        <div class="field-group"><label>Voltagem</label><select id="orcInstalVoltagem"><option>127V</option><option>220V</option></select></div>
+                        <div class="field-group"><label>Número da Nota Fiscal</label><input type="text" id="orcInstalNF"></div>
+                    </div>
+                    <div style="background: #fef9e6; padding: 16px; margin-top: 16px;">
+                        <label style="font-weight:bold;">✅ Garantia do Serviço</label>
+                        <div style="display: flex; gap: 20px; margin-top: 8px;"><label><input type="radio" name="orcGarantiaServico" value="3 meses"> 3 Meses</label><label><input type="radio" name="orcGarantiaServico" value="6 meses"> 6 Meses</label><label><input type="radio" name="orcGarantiaServico" value="1 ano"> 1 Ano</label></div>
+                    </div>
+                </div>
+            `;
         }
     }
 
-    function renderizarClientes() {
-        const container = document.getElementById('listaClientes');
-        if (!container) return;
-        if (clientesFiltrados.length === 0) { container.innerHTML = '<div class="item-lista">📁 Nenhum cliente cadastrado</div>'; return; }
-        container.innerHTML = '';
-        clientesFiltrados.forEach(c => { 
-            container.innerHTML += `<div class="item-lista">
-                <div><strong>${c.nome}</strong><br><small style="font-family: Geneva;">📞 ${c.telefone}</small></div>
-                <div class="item-acoes">
-                    <button class="btn-acao" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn-acao" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i> Excluir</button>
-                </div>
-            </div>`; 
-        });
+    function orcGetGarantiaSelecionada() {
+        const radios = document.querySelectorAll('input[name="orcGarantiaServico"]');
+        for (let r of radios) if (r.checked) return r.value;
+        return "Não especificada";
     }
 
+    function orcGerarHtmlOrcamento() {
+        const nomeCliente = document.getElementById('orcClienteNome')?.value.trim() || '';
+        const telefone = document.getElementById('orcClienteTelefone')?.value.trim() || '';
+        if (!nomeCliente || !telefone) {
+            mostrarNotificacao('Preencha Nome do cliente e Telefone para gerar orçamento.', 'erro');
+            return null;
+        }
+
+        const tipo = orcCurrentServiceType;
+        let infoEquipamentoHtml = '';
+        let garantiaHtml = `<div><strong>Garantia do serviço:</strong> ${orcGetGarantiaSelecionada()}</div>`;
+
+        if (tipo === 'manutencao') {
+            const equip = document.getElementById('orcManutEquipamento')?.value || '';
+            const modelo = document.getElementById('orcManutModelo')?.value || '';
+            const serie = document.getElementById('orcManutSerie')?.value || '';
+            const defeito = document.getElementById('orcManutDefeito')?.value || '';
+            const solucao = document.getElementById('orcManutSolucao')?.value || '';
+            infoEquipamentoHtml = `<div><strong>Equipamento:</strong> ${equip || '—'}</div><div><strong>Modelo:</strong> ${modelo || '—'} | <strong>Nº Série:</strong> ${serie || '—'}</div><div><strong>Defeito:</strong><br>${defeito.replace(/\n/g,'<br>') || '—'}</div><div><strong>Solução:</strong><br>${solucao.replace(/\n/g,'<br>') || '—'}</div>`;
+        } else {
+            const tipoInst = document.getElementById('orcInstalTipo')?.value || '';
+            const equip = document.getElementById('orcInstalEquipamento')?.value || '';
+            const modelo = document.getElementById('orcInstalModelo')?.value || '';
+            const serie = document.getElementById('orcInstalSerie')?.value || '';
+            const fabricante = document.getElementById('orcInstalFabricante')?.value || '';
+            const voltagem = document.getElementById('orcInstalVoltagem')?.value || '';
+            const nf = document.getElementById('orcInstalNF')?.value || '';
+            infoEquipamentoHtml = `<div><strong>Tipo:</strong> ${tipoInst}</div><div><strong>Equipamento:</strong> ${equip} | <strong>Modelo:</strong> ${modelo}</div><div><strong>Nº Série:</strong> ${serie} | <strong>Fabricante:</strong> ${fabricante}</div><div><strong>Voltagem:</strong> ${voltagem} | <strong>NF:</strong> ${nf}</div>`;
+        }
+
+        let pecasHtml = '';
+        if (orcListaPecas.length === 0) pecasHtml = '<tr><td colspan="4" style="text-align:center;">Nenhuma peça adicionada</td></tr>';
+        else orcListaPecas.forEach(p => { pecasHtml += `<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>${formatMoney(p.valor)}</td><td>${formatMoney(p.valor * p.quantidade)}</td></tr>`; });
+        
+        const totalPecasCalc = orcListaPecas.reduce((s,p)=> s + (p.valor * p.quantidade),0);
+        const maoDeObraVal = parseMoneyToFloat(document.getElementById('orcMaoDeObra')?.value || '0');
+        const totalGeral = totalPecasCalc + maoDeObraVal;
+        const campoExtraValor = document.getElementById('orcCampoExtraManual')?.value.trim() || '';
+        const detalhesExtras = document.getElementById('orcDetalhesProposta')?.value.trim() || '';
+
+        const html = `
+            <div style="font-family:'Segoe UI',sans-serif;">
+                <div style="text-align:center; border-bottom:3px solid #008080; padding-bottom:16px;">
+                    <h2 style="color:#000080;">ONS Eletrotécnica</h2>
+                    <p>Manutenção e Instalações Elétricas<br>CNPJ: 66.326.736/0001-62 | Tel: (35) 9 2000-4813</p>
+                </div>
+                <div style="margin-top:20px;"><p><strong>Cliente:</strong> ${nomeCliente}<br><strong>Telefone:</strong> ${telefone}<br><strong>Tipo:</strong> ${tipo === 'manutencao' ? 'MANUTENÇÃO' : 'INSTALAÇÃO'}</p></div>
+                <div style="background:#f0f4f8; padding:14px; margin:15px 0;">${infoEquipamentoHtml}<hr>${garantiaHtml}</div>
+                ${detalhesExtras ? `<div style="background:#fef7e0; padding:14px; margin:15px 0;"><strong>📌 Detalhes:</strong><br>${detalhesExtras.replace(/\n/g,'<br>')}</div>` : ''}
+                <div><h3>🔩 Peças utilizadas</h3><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#e2e8f0;"><th>Peça</th><th>Qtd</th><th>Valor Unit.</th><th>Subtotal</th></tr></thead><tbody>${pecasHtml}</tbody></table></div>
+                <div><strong>Mão de obra:</strong> ${formatMoney(maoDeObraVal)}</div>
+                ${campoExtraValor ? `<div><strong>Observação:</strong> ${campoExtraValor}</div>` : ''}
+                <hr><div style="font-size:1.5rem; font-weight:800; text-align:right; color:#000080;">TOTAL: ${formatMoney(totalGeral)}</div>
+                <div style="font-size:0.7rem; text-align:center; margin-top:28px;">ONS Orçamento - Documento gerado eletronicamente</div>
+            </div>
+        `;
+        return { html, totalGeral, nomeCliente, telefone };
+    }
+
+    // ==================== MENU ====================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            const telaId = this.getAttribute('data-tab');
+            document.getElementById(telaId).classList.add('active');
+            if (telaId === 'dashboard') atualizarDashboard();
+            if (telaId === 'clientes') carregarListaClientes();
+            if (telaId === 'equipamentos') mostrarEquipamentos();
+            if (telaId === 'historico') { carregarHistorico(); carregarHistoricoFaturas(); }
+            if (telaId === 'relatorios') listarTodasOS();
+            if (telaId === 'osclientes') carregarOSClientes();
+            if (telaId === 'faturamento') carregarSelectOSFaturamento();
+        });
+    });
+
+    // ==================== CLIENTES ====================
+    window.salvarCliente = function() {
+        const nome = document.getElementById('cliente-nome').value.trim();
+        const telefone = document.getElementById('cliente-telefone').value.trim();
+        if (!nome || !telefone) { mostrarNotificacao('Nome e telefone são obrigatórios!', 'erro'); return; }
+        const novoCliente = { id: Date.now(), nome, telefone, email: document.getElementById('cliente-email').value, endereco: document.getElementById('cliente-endereco').value, data: new Date().toISOString(), equipamentos: [] };
+        clientes.push(novoCliente);
+        salvarClientes();
+        mostrarNotificacao('Cliente salvo!', 'sucesso');
+        limparFormCliente();
+        carregarListaClientes();
+        carregarClientesSelect();
+        atualizarDashboard();
+        carregarSelectOSFaturamento();
+        clienteSelecionadoId = novoCliente.id;
+        document.getElementById('secao-equipamentos-cliente').style.display = 'block';
+        atualizarListaEquipamentosCliente();
+    }
+    
+    window.limparFormCliente = function() {
+        document.getElementById('cliente-nome').value = '';
+        document.getElementById('cliente-telefone').value = '';
+        document.getElementById('cliente-email').value = '';
+        document.getElementById('cliente-endereco').value = '';
+        document.getElementById('secao-equipamentos-cliente').style.display = 'none';
+        clienteSelecionadoId = null;
+    }
+    
+    function carregarListaClientes() {
+        const container = document.getElementById('lista-clientes');
+        if (!container) return;
+        if (clientes.length === 0) { container.innerHTML = '<div class="item-lista">Nenhum cliente cadastrado</div>'; return; }
+        container.innerHTML = '';
+        clientes.forEach(c => {
+            container.innerHTML += `<div class="item-lista"><div class="item-lista-info"><h4>${c.nome}</h4><p><i class="fas fa-phone"></i> ${c.telefone}</p></div><div class="item-lista-acoes"><button class="btn-acao" onclick="verClienteCompleto(${c.id})">Ver</button><button class="btn-acao" onclick="editarCliente(${c.id})">Editar</button><button class="btn-acao" onclick="gerenciarEquipamentos(${c.id})">Equip.</button><button class="btn-acao" onclick="excluirCliente(${c.id})">Excluir</button></div></div>`;
+        });
+    }
+    
     function filtrarClientes() {
         const termo = document.getElementById('searchCliente').value.toLowerCase();
-        clientesFiltrados = clientes.filter(c => c.nome.toLowerCase().includes(termo) || (c.telefone && c.telefone.includes(termo)));
-        renderizarClientes();
-    }
-
-    async function excluirCliente(id) {
-        if (!confirm('Tem certeza que deseja excluir este cliente? Todas as OS associadas também serão removidas.')) return;
-        try {
-            await supabase.from('clientes').delete().eq('id', id);
-            await supabase.from('ordens_servico').delete().eq('cliente_id', id);
-            mostrarToast('Cliente excluído!', 'sucesso');
-            carregarClientes();
-            carregarOS();
-        } catch(e) {
-            clientes = clientes.filter(c => c.id !== id);
-            ordensServico = ordensServico.filter(o => o.cliente_id !== id);
-            salvarClientesLocal();
-            localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico));
-            renderizarClientes();
-            carregarOS();
-            mostrarToast('Excluído localmente!', 'sucesso');
-        }
-    }
-
-    function editarCliente(id) {
-        const cliente = clientes.find(c => c.id === id);
-        if (cliente) {
-            document.getElementById('cliNome').value = cliente.nome;
-            document.getElementById('cliTelefone').value = cliente.telefone;
-            document.getElementById('cliEmail').value = cliente.email || '';
-            document.getElementById('cliEndereco').value = cliente.endereco || '';
-            mostrarToast('Editando cliente - clique em Salvar após as alterações', 'sucesso');
-        }
-    }
-
-    function limparFormCliente() { 
-        document.getElementById('cliNome').value = ''; 
-        document.getElementById('cliTelefone').value = ''; 
-        document.getElementById('cliEmail').value = ''; 
-        document.getElementById('cliEndereco').value = ''; 
+        const container = document.getElementById('lista-clientes');
+        const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(termo) || (c.telefone && c.telefone.includes(termo)));
+        if (filtrados.length === 0) { container.innerHTML = '<div class="item-lista">Nenhum cliente encontrado</div>'; return; }
+        container.innerHTML = '';
+        filtrados.forEach(c => { container.innerHTML += `<div class="item-lista"><div><h4>${c.nome}</h4><p>${c.telefone}</p></div><div><button class="btn-acao" onclick="verClienteCompleto(${c.id})">Ver</button><button class="btn-acao" onclick="editarCliente(${c.id})">Editar</button><button class="btn-acao" onclick="excluirCliente(${c.id})">Excluir</button></div></div>`; });
     }
     
-    function carregarSelectClientes() { 
-        const s = document.getElementById('osCliente'); 
-        if(s) { 
-            s.innerHTML = '<option value="">📋 Selecione um cliente</option>'; 
-            clientes.forEach(c => s.innerHTML += `<option value="${c.id}">${c.nome}</option>`); 
-        } 
+    window.verClienteCompleto = function(id) {
+        const cliente = clientes.find(c => c.id === id);
+        document.getElementById('modal-body').innerHTML = `<p><strong>Nome:</strong> ${cliente.nome}</p><p><strong>Telefone:</strong> ${cliente.telefone}</p><p><strong>E-mail:</strong> ${cliente.email || 'N/A'}</p><p><strong>Endereço:</strong> ${cliente.endereco || 'N/A'}</p>`;
+        document.getElementById('modalOS').classList.add('active');
     }
-
-    // ========== ORDENS DE SERVIÇO ==========
-    async function salvarOS() {
-        const clienteId = document.getElementById('osCliente').value;
-        const equipamento = document.getElementById('osEquipamento').value.trim();
-        if (!clienteId || !equipamento) { mostrarToast('Preencha cliente e equipamento!', 'erro'); return; }
-        const valor = parseMoney(document.getElementById('osValor').value);
-        const novaOS = { 
-            cliente_id: parseInt(clienteId), 
-            equipamento, 
-            defeito: document.getElementById('osDefeito').value, 
-            solucao: document.getElementById('osSolucao').value, 
-            modulo: MODULO, 
-            status: 'aberto', 
-            valor: valor,
-            data_abertura: new Date().toISOString() 
-        };
-        try {
-            await supabase.from('ordens_servico').insert([novaOS]);
-            mostrarToast('OS salva com sucesso!', 'sucesso');
-            limparOS();
-            carregarOS();
-        } catch(e) { 
-            novaOS.id = Date.now(); 
-            ordensServico.push(novaOS); 
-            localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico)); 
-            mostrarToast('Salva localmente!', 'sucesso'); 
-            limparOS(); 
-            carregarOS(); 
-        }
+    
+    window.editarCliente = function(id) {
+        const cliente = clientes.find(c => c.id === id);
+        document.getElementById('cliente-nome').value = cliente.nome;
+        document.getElementById('cliente-telefone').value = cliente.telefone;
+        document.getElementById('cliente-email').value = cliente.email || '';
+        document.getElementById('cliente-endereco').value = cliente.endereco || '';
+        clientes = clientes.filter(c => c.id !== id);
+        salvarClientes();
+        carregarListaClientes();
+        carregarClientesSelect();
+        mostrarNotificacao('Edite os dados e clique em Salvar Cliente', 'info');
     }
-
-    async function carregarOS() {
-        try {
-            const { data } = await supabase.from('ordens_servico').select('*, clientes(nome)').eq('modulo', MODULO).order('data_abertura', { ascending: false });
-            ordensServico = data || [];
-            osFiltradas = [...ordensServico];
-            renderizarHistorico();
-            atualizarDashboard();
-            carregarOrcamento();
-            carregarFaturas();
-        } catch(e) { 
-            const saved = localStorage.getItem('ons_eletrica_os'); 
-            if(saved) ordensServico = JSON.parse(saved);
-            const savedFaturas = localStorage.getItem('ons_eletrica_faturas');
-            if(savedFaturas) faturas = JSON.parse(savedFaturas);
-            osFiltradas = [...ordensServico];
-            renderizarHistorico(); 
-            carregarOrcamento();
-            carregarFaturas();
-        }
+    
+    window.gerenciarEquipamentos = function(id) {
+        clienteSelecionadoId = id;
+        document.getElementById('secao-equipamentos-cliente').style.display = 'block';
+        atualizarListaEquipamentosCliente();
+        mostrarNotificacao('Adicione os equipamentos do cliente', 'info');
     }
-
-    function renderizarHistorico() {
-        const container = document.getElementById('listaHistorico');
-        if (!container) return;
-        if (osFiltradas.length === 0) { container.innerHTML = '<div class="item-lista">📁 Nenhuma OS encontrada</div>'; return; }
+    
+    window.excluirCliente = function(id) {
+        if (!confirm('Excluir cliente?')) return;
+        clientes = clientes.filter(c => c.id !== id);
+        manutencoes = manutencoes.filter(m => m.clienteId !== id);
+        salvarClientes();
+        salvarManutencoes();
+        carregarListaClientes();
+        carregarClientesSelect();
+        atualizarDashboard();
+        carregarSelectOSFaturamento();
+        mostrarNotificacao('Cliente excluído!', 'sucesso');
+    }
+    
+    function carregarClientesSelect() {
+        const select = document.getElementById('os-cliente');
+        select.innerHTML = '<option value="">Selecione um cliente</option>';
+        clientes.forEach(c => select.innerHTML += `<option value="${c.id}">${c.nome}</option>`);
+    }
+    
+    function carregarEquipamentosClienteSelect(clienteId) {
+        const cliente = clientes.find(c => c.id === clienteId);
+        const selectEquip = document.getElementById('os-equipamento-select');
+        const inputEquip = document.getElementById('os-equipamento');
+        if (cliente && cliente.equipamentos && cliente.equipamentos.length > 0) {
+            selectEquip.style.display = 'block';
+            inputEquip.style.display = 'none';
+            selectEquip.innerHTML = '<option value="">Selecione um equipamento</option>';
+            cliente.equipamentos.forEach(eq => { selectEquip.innerHTML += `<option value="${eq.nome}">${eq.nome}</option>`; });
+            selectEquip.innerHTML += '<option value="outro">Outro equipamento</option>';
+            selectEquip.onchange = function() {
+                if (selectEquip.value === 'outro') { inputEquip.style.display = 'block'; inputEquip.value = ''; }
+                else { inputEquip.style.display = 'none'; inputEquip.value = selectEquip.value; }
+            };
+        } else { selectEquip.style.display = 'none'; inputEquip.style.display = 'block'; inputEquip.value = ''; }
+    }
+    
+    function mostrarSecaoEquipamentos(clienteId) { clienteSelecionadoId = clienteId; document.getElementById('secao-equipamentos-cliente').style.display = 'block'; atualizarListaEquipamentosCliente(); }
+    
+    function atualizarListaEquipamentosCliente() {
+        const cliente = clientes.find(c => c.id === clienteSelecionadoId);
+        const tbody = document.getElementById('lista-equipamentos-cliente');
+        if (!cliente || !cliente.equipamentos || cliente.equipamentos.length === 0) { tbody.innerHTML = '<tr><td colspan="6">Nenhum equipamento</td></tr>'; return; }
+        tbody.innerHTML = '';
+        cliente.equipamentos.forEach((equip, index) => { tbody.innerHTML += `<tr><td>${equip.nome}</td><td>${equip.fabricante || '-'}</td><td>${equip.modelo || '-'}</td><td>${equip.numeroSerie || '-'}</td><td>${equip.voltagem || '-'}</td><td><button class="btn-acao" onclick="removerEquipamentoCliente(${index})">Remover</button></td></tr>`; });
+    }
+    
+    window.adicionarEquipamentoCliente = function() {
+        if (!clienteSelecionadoId) { mostrarNotificacao('Selecione um cliente primeiro!', 'erro'); return; }
+        const equipPre = document.getElementById('equip-pre-carregado').value;
+        const fabricante = document.getElementById('equip-fabricante').value.trim();
+        const modelo = document.getElementById('equip-modelo').value.trim();
+        const numeroSerie = document.getElementById('equip-numero-serie').value.trim();
+        const voltagem = document.getElementById('equip-voltagem').value.trim();
+        const nomeEquip = equipPre || (fabricante + ' ' + modelo).trim();
+        if (!nomeEquip) { mostrarNotificacao('Selecione ou digite um equipamento!', 'erro'); return; }
+        const cliente = clientes.find(c => c.id === clienteSelecionadoId);
+        if (!cliente.equipamentos) cliente.equipamentos = [];
+        cliente.equipamentos.push({ nome: nomeEquip, fabricante, modelo, numeroSerie, voltagem, data: new Date().toISOString() });
+        salvarClientes();
+        document.getElementById('equip-pre-carregado').value = '';
+        document.getElementById('equip-fabricante').value = '';
+        document.getElementById('equip-modelo').value = '';
+        document.getElementById('equip-numero-serie').value = '';
+        document.getElementById('equip-voltagem').value = '';
+        atualizarListaEquipamentosCliente();
+        carregarListaClientes();
+        mostrarNotificacao('Equipamento adicionado!', 'sucesso');
+    }
+    
+    window.removerEquipamentoCliente = function(index) {
+        const cliente = clientes.find(c => c.id === clienteSelecionadoId);
+        if (cliente && cliente.equipamentos) { cliente.equipamentos.splice(index, 1); salvarClientes(); atualizarListaEquipamentosCliente(); carregarListaClientes(); mostrarNotificacao('Equipamento removido!', 'sucesso'); }
+    }
+    
+    // ==================== EQUIPAMENTOS ====================
+    function mostrarEquipamentos() {
+        const container = document.getElementById('lista-equipamentos-pre');
         container.innerHTML = '';
-        osFiltradas.forEach(os => { 
-            const clienteNome = os.clientes?.nome || clientes.find(c => c.id === os.cliente_id)?.nome || 'N/A';
-            container.innerHTML += `<div class="item-lista">
-                <div>
-                    <strong>#${os.id}</strong> - ${clienteNome}<br>
-                    <small style="font-family: Geneva;">⚡ ${os.equipamento} | 💰 ${formatMoney(os.valor)}</small>
-                </div>
-                <div class="item-acoes">
-                    <button class="btn-acao" onclick="verOS(${os.id})"><i class="fas fa-eye"></i> Ver</button>
-                    <button class="btn-acao" onclick="enviarOSWhatsApp(${os.id})"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button class="btn-acao" onclick="excluirOS(${os.id})"><i class="fas fa-trash"></i> Excluir</button>
-                </div>
-            </div>`; 
-        });
+        equipamentosLista.forEach(eq => { container.innerHTML += `<div class="stat-card" style="cursor:pointer;" onclick="selecionarEquipamentoRapido('${eq}')"><i class="fas fa-microscope"></i> ${eq}</div>`; });
     }
-
-    function filtrarHistorico() {
-        const termo = document.getElementById('searchHistorico').value.toLowerCase();
-        osFiltradas = ordensServico.filter(os => {
-            const clienteNome = os.clientes?.nome || clientes.find(c => c.id === os.cliente_id)?.nome || '';
-            return os.id.toString().includes(termo) || 
-                   clienteNome.toLowerCase().includes(termo) ||
-                   os.equipamento.toLowerCase().includes(termo);
-        });
-        renderizarHistorico();
+    
+    function selecionarEquipamentoRapido(equipamento) { document.getElementById('os-equipamento').value = equipamento; document.querySelector('[data-tab="novaos"]').click(); }
+    window.usarEquipamentoManual = function() { const eq = document.getElementById('equip-manual').value.trim(); if(eq) { document.getElementById('os-equipamento').value = eq; document.querySelector('[data-tab="novaos"]').click(); } else mostrarNotificacao('Digite um equipamento!', 'erro'); }
+    
+    // ==================== OS LOCAL ====================
+    window.salvarOS = function() {
+        const clienteId = document.getElementById('os-cliente').value;
+        let equipamento = document.getElementById('os-equipamento').value.trim();
+        const selectEquip = document.getElementById('os-equipamento-select');
+        if (selectEquip.style.display !== 'none' && selectEquip.value && selectEquip.value !== 'outro') equipamento = selectEquip.value;
+        if (!clienteId || !equipamento) { mostrarNotificacao('Preencha todos os campos!', 'erro'); return; }
+        manutencoes.push({ id: Date.now(), clienteId: parseInt(clienteId), equipamento, defeitos: document.getElementById('os-defeitos').value, solucoes: document.getElementById('os-solucoes').value, data: new Date().toISOString() });
+        salvarManutencoes();
+        mostrarNotificacao('OS salva!', 'sucesso');
+        limparOS();
+        atualizarDashboard();
+        carregarHistorico();
+        carregarSelectOSFaturamento();
     }
-
-    function limparOS() { 
-        document.getElementById('osCliente').value = ''; 
-        document.getElementById('osEquipamento').value = ''; 
-        document.getElementById('osDefeito').value = ''; 
-        document.getElementById('osSolucao').value = ''; 
-        document.getElementById('osValor').value = '';
-    }
-
-    async function verOS(id) { 
-        const os = ordensServico.find(o => o.id === id); 
-        const cliente = clientes.find(c => c.id === os?.cliente_id); 
-        document.getElementById('modalBody').innerHTML = `
-            <p><strong>⚡ OS #${id}</strong></p>
-            <p><strong>👤 Cliente:</strong> ${cliente?.nome}</p>
-            <p><strong>📞 Telefone:</strong> ${cliente?.telefone || 'N/A'}</p>
-            <p><strong>🔌 Equipamento:</strong> ${os?.equipamento}</p>
-            <p><strong>⚠️ Defeito:</strong> ${os?.defeito || 'N/A'}</p>
-            <p><strong>✅ Solução:</strong> ${os?.solucao || 'N/A'}</p>
-            <p><strong>💰 Valor:</strong> ${formatMoney(os?.valor)}</p>
-            <p><strong>📅 Data:</strong> ${new Date(os?.data_abertura).toLocaleString()}</p>
-            <p><strong>📌 Status:</strong> ${os?.status === 'aberto' ? '🟡 Em aberto' : '🟢 Finalizado'}</p>
-        `;
-        document.getElementById('modalOS').classList.add('active'); 
-    }
-
-    async function excluirOS(id) { 
-        if (!confirm('Excluir esta OS permanentemente?')) return; 
-        try { 
-            await supabase.from('ordens_servico').delete().eq('id', id); 
-            mostrarToast('OS excluída!', 'sucesso'); 
-            carregarOS(); 
-        } catch(e) { 
-            ordensServico = ordensServico.filter(o => o.id !== id); 
-            localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico)); 
-            renderizarHistorico(); 
-            mostrarToast('Excluída localmente!', 'sucesso'); 
-        } 
-        atualizarDashboard(); 
-    }
-
-    function enviarOSWhatsApp(id) { 
-        const os = ordensServico.find(o => o.id === id); 
-        const cliente = clientes.find(c => c.id === os?.cliente_id); 
-        if (!cliente?.telefone) { mostrarToast('Telefone não encontrado!', 'erro'); return; } 
-        const msg = `⚡ ONS Eletrotécnica\n\nOS #${id}\nCliente: ${cliente.nome}\nEquipamento: ${os.equipamento}\nDefeito: ${os.defeito || 'N/A'}\nValor: ${formatMoney(os.valor)}\n\nPara mais informações, entre em contato.`;
-        window.open(`https://wa.me/55${cliente.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank'); 
-    }
-
-    // ========== ORÇAMENTO ==========
-    function carregarOrcamento() {
-        const container = document.getElementById('orcamentoContent');
-        if (!container) return;
-        const osEmAberto = ordensServico.filter(o => o.status === 'aberto');
-        if (osEmAberto.length === 0) {
-            container.innerHTML = '<div class="item-lista">📁 Nenhuma OS em aberto para orçamento</div>';
-            return;
-        }
-        container.innerHTML = '<div class="stats-grid" style="margin-bottom: 20px;">' + osEmAberto.map(os => {
-            const cliente = clientes.find(c => c.id === os.cliente_id);
-            return `<div class="stat-card"><strong>OS #${os.id}</strong><br>${cliente?.nome}<br>${os.equipamento}<br><span style="font-size: 18px;">${formatMoney(os.valor)}</span><br><button class="mac-btn" style="margin-top: 10px; padding: 4px 12px;" onclick="finalizarOS(${os.id})"><i class="fas fa-check"></i> Finalizar</button></div>`;
-        }).join('') + '</div>';
-    }
-
-    async function finalizarOS(id) {
-        const valor = prompt('Digite o valor final da OS (R$):', '0,00');
-        if (valor === null) return;
-        try {
-            await supabase.from('ordens_servico').update({ status: 'finalizado', valor: parseMoney(valor) }).eq('id', id);
-            mostrarToast('OS finalizada com sucesso!', 'sucesso');
-            carregarOS();
-        } catch(e) {
-            const os = ordensServico.find(o => o.id === id);
-            if (os) {
-                os.status = 'finalizado';
-                os.valor = parseMoney(valor);
-                localStorage.setItem('ons_eletrica_os', JSON.stringify(ordensServico));
-                mostrarToast('Finalizada localmente!', 'sucesso');
-                carregarOS();
-            }
-        }
-    }
-
-    // ========== FATURAMENTO ==========
-    function carregarFaturas() {
-        const container = document.getElementById('faturamentoContent');
-        if (!container) return;
-        
-        const osFinalizadas = ordensServico.filter(o => o.status === 'finalizado');
-        
-        container.innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-card"><h3>${osFinalizadas.length}</h3><p>OS Finalizadas</p></div>
-                <div class="stat-card"><h3>${formatMoney(osFinalizadas.reduce((acc, o) => acc + (o.valor || 0), 0))}</h3><p>Total a Faturar</p></div>
-            </div>
-            <div class="btn-group" style="margin-bottom: 20px;">
-                <button class="mac-btn mac-btn-primary" onclick="abrirNovaFatura()"><i class="fas fa-plus"></i> Nova Fatura</button>
-            </div>
-            <div id="listaFaturas"></div>
-        `;
-        
-        renderizarListaFaturas();
-    }
-
-    function renderizarListaFaturas() {
-        const container = document.getElementById('listaFaturas');
-        if (!container) return;
-        
-        if (faturas.length === 0) {
-            container.innerHTML = '<div class="item-lista">📁 Nenhuma fatura gerada</div>';
-            return;
-        }
-        
+    
+    window.limparOS = function() { document.getElementById('os-cliente').value = ''; document.getElementById('os-equipamento').value = ''; document.getElementById('os-equipamento-select').style.display = 'none'; document.getElementById('os-equipamento').style.display = 'block'; document.getElementById('os-defeitos').value = ''; document.getElementById('os-solucoes').value = ''; }
+    
+    document.getElementById('os-cliente')?.addEventListener('change', function() { if(this.value) carregarEquipamentosClienteSelect(parseInt(this.value)); });
+    
+    function carregarHistorico() {
+        const container = document.getElementById('lista-historico');
+        if (manutencoes.length === 0) { container.innerHTML = '<div class="item-lista">Nenhuma OS</div>'; return; }
         container.innerHTML = '';
-        faturas.forEach(f => {
-            const os = ordensServico.find(o => o.id === f.os_id);
-            const cliente = clientes.find(c => c.id === os?.cliente_id);
-            container.innerHTML += `<div class="fatura-item">
-                <div><strong>${f.numero_documento}</strong><br><small>OS #${f.os_id} - ${cliente?.nome}</small><br><small>Valor: ${formatMoney(os?.valor)}</small></div>
-                <div><span style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">${f.forma_pagamento}</span><br><small>${new Date(f.data_emissao).toLocaleDateString()}</small></div>
-                <div><button class="btn-acao" onclick="excluirFatura('${f.id}')"><i class="fas fa-trash"></i> Excluir</button></div>
-            </div>`;
+        [...manutencoes].reverse().forEach(os => {
+            const cliente = clientes.find(c => c.id === os.clienteId);
+            container.innerHTML += `<div class="item-lista"><div><h4>${cliente?.nome || 'N/A'} - ${os.equipamento}</h4><p>${new Date(os.data).toLocaleDateString()}</p></div><div><button class="btn-acao" onclick="verOSDetalhes(${os.id})">Ver</button><button class="btn-acao" onclick="irParaFaturamentoComOS(${os.id})">Faturar</button><button class="btn-acao" onclick="excluirOSLocal(${os.id})">Excluir</button></div></div>`;
         });
     }
-
-    function abrirNovaFatura() {
-        const osFinalizadas = ordensServico.filter(o => o.status === 'finalizado' && !faturas.some(f => f.os_id === o.id));
-        if (osFinalizadas.length === 0) {
-            mostrarToast('Não há OS finalizadas disponíveis para faturar!', 'erro');
-            return;
-        }
-        
-        document.getElementById('modalFaturaBody').innerHTML = `
-            <div class="field-group"><label>Selecione a OS</label>
-                <select id="faturaOS">${osFinalizadas.map(os => {
-                    const c = clientes.find(c => c.id === os.cliente_id);
-                    return `<option value="${os.id}">OS #${os.id} - ${c?.nome} - ${formatMoney(os.valor)}</option>`;
-                }).join('')}</select>
-            </div>
-            <div class="field-group"><label>Número do Documento</label><input type="text" id="numDocumento" value="FAT-${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}-${String(faturas.length+1).padStart(3,'0')}"></div>
-            <div class="field-group"><label>Forma de Pagamento</label>
-                <select id="formaPagamento"><option>À Vista</option><option>Cartão de Crédito</option><option>PIX</option><option>Boleto</option><option>Transferência</option></select>
-            </div>
-            <div class="btn-group"><button class="mac-btn mac-btn-primary" onclick="salvarFatura()"><i class="fas fa-save"></i> Gerar Fatura</button></div>
-        `;
-        document.getElementById('modalFatura').classList.add('active');
+    
+    function filtrarHistoricoOS() {
+        const termo = document.getElementById('searchHistoricoOS').value.toLowerCase();
+        const container = document.getElementById('lista-historico');
+        const filtrados = manutencoes.filter(os => { const c = clientes.find(c => c.id === os.clienteId); return os.equipamento.toLowerCase().includes(termo) || (c && c.nome.toLowerCase().includes(termo)); });
+        if (filtrados.length === 0) { container.innerHTML = '<div class="item-lista">Nenhuma OS encontrada</div>'; return; }
+        container.innerHTML = '';
+        [...filtrados].reverse().forEach(os => { const c = clientes.find(c => c.id === os.clienteId); container.innerHTML += `<div class="item-lista"><div><h4>${c?.nome} - ${os.equipamento}</h4><p>${new Date(os.data).toLocaleDateString()}</p></div><div><button class="btn-acao" onclick="verOSDetalhes(${os.id})">Ver</button><button class="btn-acao" onclick="excluirOSLocal(${os.id})">Excluir</button></div></div>`; });
     }
-
-    function salvarFatura() {
-        const osId = document.getElementById('faturaOS').value;
-        if (!osId) { mostrarToast('Selecione uma OS!', 'erro'); return; }
-        const novaFatura = { 
-            id: Date.now(),
-            os_id: parseInt(osId), 
-            modulo: MODULO, 
-            numero_documento: document.getElementById('numDocumento').value, 
-            forma_pagamento: document.getElementById('formaPagamento').value, 
-            status: 'EM ABERTO', 
-            data_emissao: new Date().toISOString() 
-        };
-        faturas.push(novaFatura);
-        localStorage.setItem('ons_eletrica_faturas', JSON.stringify(faturas));
-        mostrarToast('Fatura gerada com sucesso!', 'sucesso');
-        fecharModalFatura();
-        carregarFaturas();
-    }
-
-    function excluirFatura(id) {
-        if (!confirm('Excluir esta fatura?')) return;
-        faturas = faturas.filter(f => f.id != id);
-        localStorage.setItem('ons_eletrica_faturas', JSON.stringify(faturas));
-        mostrarToast('Fatura excluída!', 'sucesso');
-        carregarFaturas();
-    }
-
-    function fecharModalFatura() { document.getElementById('modalFatura').classList.remove('active'); }
-
-    // ========== RELATÓRIOS ==========
-    function gerarRelatorios() { 
-        const totalFaturado = ordensServico.filter(o => o.status === 'finalizado').reduce((acc, o) => acc + (o.valor || 0), 0);
-        document.getElementById('relatoriosContent').innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-card"><h3>${ordensServico.length}</h3><p>Total OS</p></div>
-                <div class="stat-card"><h3>${clientes.length}</h3><p>Clientes</p></div>
-                <div class="stat-card"><h3>${ordensServico.filter(o => o.status === 'finalizado').length}</h3><p>Finalizadas</p></div>
-                <div class="stat-card"><h3>${formatMoney(totalFaturado)}</h3><p>Total Faturado</p></div>
-                <div class="stat-card"><h3>${faturas.length}</h3><p>Faturas Emitidas</p></div>
-            </div>
-            <div class="btn-group">
-                <button class="mac-btn mac-btn-primary" onclick="exportarRelatorio()"><i class="fas fa-download"></i> Exportar Relatório Completo</button>
-            </div>
-        `; 
-    }
-
-    function exportarRelatorio() { 
-        let texto = `RELATÓRIO ONS ELETROTÉCNICA\n${new Date().toLocaleString()}\n${'='.repeat(50)}\n\nTotal OS: ${ordensServico.length}\nTotal Finalizadas: ${ordensServico.filter(o => o.status === 'finalizado').length}\nTotal Faturas: ${faturas.length}\n\nDETALHAMENTO:\n`;
-        ordensServico.forEach(os => { 
-            const c = clientes.find(c => c.id === os.cliente_id); 
-            texto += `\nOS #${os.id} | ${c?.nome} | ${os.equipamento} | Status: ${os.status} | Valor: ${formatMoney(os.valor)}\n`; 
-        }); 
-        texto += `\n${'='.repeat(50)}\nFATURAS EMITIDAS:\n`;
-        faturas.forEach(f => {
-            const os = ordensServico.find(o => o.id === f.os_id);
-            const c = clientes.find(c => c.id === os?.cliente_id);
-            texto += `\n${f.numero_documento} | ${c?.nome} | ${f.forma_pagamento} | ${formatMoney(os?.valor)}\n`;
-        });
-        const blob = new Blob([texto], { type: 'text/plain' }); 
-        const link = document.createElement('a'); 
-        link.href = URL.createObjectURL(blob); 
-        link.download = `relatorio_eletrica_${new Date().toISOString().slice(0,10)}.txt`; 
-        link.click(); 
-        mostrarToast('Relatório exportado!', 'sucesso'); 
-    }
-
-    // ========== DASHBOARD ==========
-    async function atualizarDashboard() { 
-        document.getElementById('totalClientes').innerHTML = clientes.length; 
-        document.getElementById('totalOS').innerHTML = ordensServico.length; 
-        document.getElementById('totalFinalizadas').innerHTML = ordensServico.filter(o => o.status === 'finalizado').length; 
-        const totalFaturado = ordensServico.filter(o => o.status === 'finalizado').reduce((acc, o) => acc + (o.valor || 0), 0);
-        document.getElementById('totalFaturado').innerHTML = formatMoney(totalFaturado);
-        
-        const ultimas = ordensServico.slice(0, 5); 
-        const container = document.getElementById('ultimasOS'); 
-        if (container) { 
-            if (ultimas.length === 0) container.innerHTML = '<div class="item-lista">📁 Nenhuma OS recente</div>'; 
-            else { 
-                container.innerHTML = ''; 
-                ultimas.forEach(os => { 
-                    const c = clientes.find(c => c.id === os.cliente_id); 
-                    container.innerHTML += `<div class="item-lista">
-                        <div><strong>${c?.nome || 'N/A'}</strong> - ${os.equipamento}<br><small>📅 ${new Date(os.data_abertura).toLocaleDateString()} | 💰 ${formatMoney(os.valor)}</small></div>
-                        <button class="btn-acao" onclick="verOS(${os.id})"><i class="fas fa-eye"></i> Ver</button>
-                    </div>`; 
-                }); 
-            } 
-        } 
-    }
-
-    // ========== GERAL ==========
-    function fecharModal() { document.getElementById('modalOS').classList.remove('active'); }
-
-    document.querySelectorAll('.tab-btn').forEach(btn => { 
-        btn.addEventListener('click', () => { 
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); 
-            btn.classList.add('active'); 
-            const tabId = btn.getAttribute('data-tab'); 
-            document.getElementById(tabId).classList.add('active'); 
-            if (tabId === 'relatorios') gerarRelatorios(); 
-            if (tabId === 'orcamento') carregarOrcamento();
-            if (tabId === 'faturamento') carregarFaturas();
-        }); 
-    });
-
-    document.getElementById('cliTelefone')?.addEventListener('input', e => e.target.value = formatarTelefone(e.target.value));
-    document.getElementById('osValor')?.addEventListener('input', e => {
-        let v = e.target.value.replace(/\D/g, '');
-        v = (parseInt(v) / 100).toFixed(2);
-        e.target.value = v.replace('.', ',');
-    });
-
-    carregarClientes();
-    carregarOS();
-    console.log('⚡ ONS Eletrotécnica - Modo Mac OS Classic ativado!');
-    console.log('   ✅ Todas as funções operacionais');
-    console.log('   💾 Dados sincronizados com Supabase');
-    console.log('   💰 Módulo de faturamento integrado');
+    
+    window.verOSDetalhes = function(id) { const os = manutencoes.find(m => m.id === id); const cliente = clientes.find(c => c.id === os?.clienteId); document.getElementById('modal-body').innerHTML = `<p><strong>Cliente:</strong> ${cliente?.nome}</p><p><strong>Equipamento:</strong> ${os?.equipamento}</p><p><strong>Defeito:</strong> ${os?.defeitos || 'N/A'}</p><p><strong>Solução:</strong> ${os?.solucoes || 'N/A'}</p><p><strong>Data:</strong> ${new Date(os?.data).toLocaleString()}</p>`; document.getElementById('modalOS').classList.add('active'); }
+    
+    window.excluirOSLocal = function(id) { if (!confirm('Excluir OS?')) return; manutencoes = manutencoes.filter(m => m.id !== id); salvarManutencoes(); carregarHistorico(); atualizarDashboard(); carregarSelectOSFaturamento(); }
+    
+    window.irParaFaturamentoComOS = function(id) { const select = document.getElementById('faturamento-os-select'); if(select) { select.value = id; carregarDadosOSFaturamento(); document.querySelector('[data-tab="faturamento"]').click(); } }
+    
+    function listarTodasOS() { const container = document.getElementById('lista-todas-os'); if (manutencoes.length === 0) { container.innerHTML = '<div class="item-lista">Nenhuma OS</div>'; return; } container.innerHTML = ''; [...manutencoes].reverse().forEach(os => { const c = clientes.find(c => c.id === os.clienteId); container.innerHTML += `<div class="item-lista"><div><h4>${c?.nome} - ${os.equipamento}</h4><p>${new Date(os.data).toLocaleString()}</p></div><div><button class="btn-acao" onclick="verOSDetalhes(${os.id})">Ver</button></div></div>`; }); }
+    
+    // ==================== FATURAMENTO ====================
+    function carregarSelectOSFaturamento() { const select = document.getElementById('faturamento-os-select'); select.innerHTML = '<option value="">Selecione uma OS</option>'; manutencoes.forEach(os => { const c = clientes.find(c => c.id === os.clienteId); select.innerHTML += `<option value="${os.id}">${c?.nome} - ${os.equipamento}</option>`; }); }
+    
+    window.carregarDadosOSFaturamento = function() { const osId = parseInt(document.getElementById('faturamento-os-select').value); if(!osId){ document.getElementById('dados-faturamento').style.display='none'; return; } osSelecionadaFatura = manutencoes.find(m => m.id === osId); if(!osSelecionadaFatura) return; document.getElementById('num-documento').value = `OS-${osId}-${new Date().getFullYear()}`; pecasUtilizadas = []; atualizarListaPecasFatura(); document.getElementById('dados-faturamento').style.display='block'; atualizarDocumento(); }
+    
+    window.adicionarPeca = function() { const nome = document.getElementById('peca-nome').value.trim(); const valor = parseFloat(document.getElementById('peca-valor').value); const quantidade = parseInt(document.getElementById('peca-quantidade').value) || 1; if(!nome || isNaN(valor) || valor<=0){ mostrarNotificacao('Preencha nome e valor da peça!','erro'); return; } pecasUtilizadas.push({ nome, valor, quantidade, subtotal: valor * quantidade }); atualizarListaPecasFatura(); document.getElementById('peca-nome').value = ''; document.getElementById('peca-valor').value = ''; document.getElementById('peca-quantidade').value = '1'; atualizarDocumento(); }
+    
+    window.removerPecaFatura = function(index) { pecasUtilizadas.splice(index, 1); atualizarListaPecasFatura(); atualizarDocumento(); }
+    
+    function atualizarListaPecasFatura() { const tbody = document.getElementById('lista-pecas-body'); if (pecasUtilizadas.length === 0) { tbody.innerHTML = '<td><td colspan="5">Nenhuma peça adicionada</td></tr>'; return; } tbody.innerHTML = ''; pecasUtilizadas.forEach((p, i) => { tbody.innerHTML += `<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>R$ ${p.valor.toFixed(2)}</td><td>R$ ${p.subtotal.toFixed(2)}</td><td><button class="btn-acao" onclick="removerPecaFatura(${i})">Remover</button></td></tr>`; }); }
+    
+    function calcularTotalPecas() { return pecasUtilizadas.reduce((s, p) => s + p.subtotal, 0); }
+    function calcularMaoObra() { return (parseFloat(document.getElementById('valor-hora').value) || 0) * (parseFloat(document.getElementById('horas-trabalhadas').value) || 0); }
+    
+    function getFormaPagamentoTexto() { const tipo = document.querySelector('input[name="pagamento-tipo"]:checked').value; const obs = document.getElementById('obs-pagamento').value; let texto = { vista:'À vista', cartao:'Cartão', pix:`PIX${document.getElementById('pix-chave')?.value ? ` - Chave: ${document.getElementById('pix-chave').value}` : ''}`, boleto:'Boleto', prazo:'Prazo 30 dias' }[tipo] || 'À vista'; if(obs) texto += `\nObs: ${obs}`; return texto; }
+    
+    function gerarDocumentoHTML() { if(!osSelecionadaFatura) return ''; const c = clientes.find(c => c.id === osSelecionadaFatura.clienteId); const totalPecas = calcularTotalPecas(); const maoObra = calcularMaoObra(); const total = totalPecas + maoObra; const formaExib = document.querySelector('input[name="forma-exibicao"]:checked').value; const numDoc = document.getElementById('num-documento').value; const formaPag = getFormaPagamentoTexto(); let tabela = pecasUtilizadas.length ? `<table class="tabela-pecas-doc"><thead><tr><th>Peça</th><th>Qtd</th><th>Valor Unit.</th><th>Subtotal</th></tr></thead><tbody>${pecasUtilizadas.map(p=>`<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>R$ ${p.valor.toFixed(2)}</td><td>R$ ${p.subtotal.toFixed(2)}</td></tr>`).join('')}</tbody></table>` : '<p>Nenhuma peça utilizada</p>'; let valores = formaExib === 'somado' ? `<div><p>Total Peças: R$ ${totalPecas.toFixed(2)}</p><p>Mão de Obra: R$ ${maoObra.toFixed(2)}</p><div class="total-geral">TOTAL: R$ ${total.toFixed(2)}</div></div>` : `<div class="total-geral">TOTAL DO SERVIÇO: R$ ${total.toFixed(2)}</div>`; return `<div class="documento-empresarial"><div class="doc-header"><h1>ONS Eletrotécnica</h1><div>Manutenção e Instalações Elétricas</div><div>CNPJ: 66.326.736/0001-62 | Tel: (35) 9 2000-4813</div></div><div class="doc-titulo">ORDEM DE SERVIÇO / FATURA</div><div>Documento: ${numDoc} | Data: ${new Date().toLocaleDateString()}</div><div class="section-cliente"><h3>CLIENTE</h3><p>${c?.nome}</p><p>${c?.telefone}</p></div><div class="section-equipamento"><h3>EQUIPAMENTO</h3><p>${osSelecionadaFatura.equipamento}</p><p>Defeito: ${osSelecionadaFatura.defeitos || 'N/A'}</p></div><h3>PEÇAS UTILIZADAS</h3>${tabela}${valores}<div class="section-pagamento"><h3>PAGAMENTO</h3><p>${formaPag.replace(/\n/g,'<br>')}</p></div><div class="assinatura"><p>_________________________</p><p>Assinatura do Cliente</p></div></div>`; }
+    
+    function atualizarDocumento() { if(osSelecionadaFatura) document.getElementById('preview-documento').innerHTML = gerarDocumentoHTML(); document.getElementById('documento-impressao').innerHTML = gerarDocumentoHTML(); }
+    window.imprimirDocumento = function() { if(!osSelecionadaFatura){ mostrarNotificacao('Selecione uma OS!','erro'); return; } document.getElementById('documento-impressao').innerHTML = gerarDocumentoHTML(); document.getElementById('documento-impressao').style.display = 'block'; window.print(); setTimeout(()=>{ document.getElementById('documento-impressao').style.display = 'none'; },100); }
+    window.enviarPorWhatsApp = function() { if(!osSelecionadaFatura){ mostrarNotificacao('Selecione uma OS!','erro'); return; } const c = clientes.find(c => c.id === osSelecionadaFatura.clienteId); if(!c?.telefone){ mostrarNotificacao('Telefone não encontrado!','erro'); return; } const doc = document.createElement('div'); doc.innerHTML = gerarDocumentoHTML(); window.open(`https://wa.me/55${c.telefone.replace(/\D/g,'')}?text=${encodeURIComponent(doc.innerText)}`,'_blank'); }
+    
+    window.salvarFatura = function() { if(!osSelecionadaFatura){ mostrarNotificacao('Selecione uma OS!','erro'); return; } const c = clientes.find(c => c.id === osSelecionadaFatura.clienteId); const total = calcularTotalPecas() + calcularMaoObra(); const novaFatura = { id: Date.now(), osId: osSelecionadaFatura.id, clienteId: c.id, clienteNome: c.nome, equipamento: osSelecionadaFatura.equipamento, numeroDocumento: document.getElementById('num-documento').value, data: new Date().toISOString(), valorTotal: total, status: 'EM ABERTO', pecas: [...pecasUtilizadas] }; faturas.push(novaFatura); salvarFaturas(); mostrarNotificacao('Fatura salva!','sucesso'); carregarHistoricoFaturas(); atualizarDashboard(); }
+    
+    function carregarHistoricoFaturas() { const container = document.getElementById('lista-historico-faturas'); if (faturas.length === 0) { container.innerHTML = '<div class="item-lista">Nenhuma fatura</div>'; return; } container.innerHTML = ''; [...faturas].reverse().forEach(f => { container.innerHTML += `<div class="item-lista"><div><h4>${f.clienteNome} - ${f.numeroDocumento}</h4><p>Valor: ${formatMoney(f.valorTotal)} | Status: ${f.status}</p></div><div><button class="btn-acao" onclick="enviarFaturaWhatsApp(${f.id})"><i class="fab fa-whatsapp"></i></button><button class="btn-acao" onclick="excluirFaturaSalva(${f.id})">Excluir</button></div></div>`; }); }
+    
+    window.enviarFaturaWhatsApp = function(id) { const f = faturas.find(f => f.id === id); const c = clientes.find(c => c.id === f.clienteId); if(c?.telefone) window.open(`https://wa.me/55${c.telefone.replace(/\D/g,'')}?text=${encodeURIComponent(`Fatura ${f.numeroDocumento} - Valor: ${formatMoney(f.valorTotal)}`)}`,'_blank'); };
+    window.excluirFaturaSalva = function(id) { if(!confirm('Excluir fatura?')) return; faturas = faturas.filter(f => f.id !== id); salvarFaturas(); carregarHistoricoFaturas(); mostrarNotificacao('Fatura excluída!','sucesso'); }
+    
+    window.mostrarAbaHistorico = function(tipo) { document.getElementById('historico-os').style.display = tipo === 'os' ? 'block' : 'none'; document.getElementById('historico-faturas').style.display = tipo === 'faturas' ? 'block' : 'none'; if(tipo === 'faturas') carregarHistoricoFaturas(); else carregarHistorico(); }
+    
+    // ==================== AUDITORIA ====================
+    function gerarResumoAuditoria() { let totalOS = manutencoes.length + osClientes.length; let totalFaturas = faturas.length; let totalFaturado = faturas.reduce((s,f)=>s+f.valorTotal,0); let totalEmAberto = faturas.filter(f=>f.status==='EM ABERTO').reduce((s,f)=>s+f.valorTotal,0); let html = `<h4>RESUMO GERAL</h4><table><tr><td>Total OS:</td><td>${totalOS}</td></tr><tr><td>Total Faturas:</td><td>${totalFaturas}</td></tr><tr><td>Total Faturado:</td><td><strong>${formatMoney(totalFaturado)}</strong></td></tr><tr><td>Em Aberto:</td><td>${formatMoney(totalEmAberto)}</td></tr></table>`; return html; }
+    window.abrirAuditoria = function() { document.getElementById('conteudo-auditoria').innerHTML = gerarResumoAuditoria(); document.getElementById('modalAuditoria').classList.add('active'); }
+    window.exportarAuditoriaTXT = function() { let txt = `ONS ELETROTÉCNICA - AUDITORIA\n${new Date().toLocaleString()}\nTotal OS: ${manutencoes.length}\nTotal Faturas: ${faturas.length}\nTotal Faturado: ${formatMoney(faturas.reduce((s,f)=>s+f.valorTotal,0))}`; const blob = new Blob([txt],{type:'text/plain'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `auditoria_${new Date().toISOString().slice(0,10)}.txt`; link.click(); mostrarNotificacao('Arquivo TXT gerado!','sucesso'); }
+    window.enviarAuditoriaWhatsApp = function() { const txt = `ONS ELETROTÉCNICA\nTotal OS: ${manutencoes.length}\nTotal Faturado: ${formatMoney(faturas.reduce((s,f)=>s+f.valorTotal,0))}`; const num = prompt('Número do WhatsApp:'); if(num) window.open(`https://wa.me/55${num.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank'); }
+    
+    // ==================== OS CLIENTES ====================
+    window.carregarOSClientes = async function() { mostrarNotificacao('Carregando OS do app...','info'); try { const { data } = await supabaseClient.from('chamados').select('*').order('created_at',{ascending:false}); osClientes = data || []; document.getElementById('total-os-clientes').textContent = osClientes.length; document.getElementById('total-os-andamento').textContent = osClientes.filter(o=>o.status!=='Finalizado').length; document.getElementById('total-os-finalizadas').textContent = osClientes.filter(o=>o.status==='Finalizado').length; const container = document.getElementById('lista-os-clientes'); if(osClientes.length===0){ container.innerHTML='<div class="item-lista">Nenhuma OS</div>'; return; } container.innerHTML=''; osClientes.forEach(os=>{ container.innerHTML+=`<div class="item-lista"><div><h4>${os.clinica} <span class="status-badge">${os.status||'Em andamento'}</span></h4><p>${os.equipamento} | ${os.prioridade}</p><p>${new Date(os.created_at).toLocaleString()}</p></div><div><button class="btn-acao" onclick="verOSCliente(${os.id})">Ver</button><button class="btn-acao" onclick="enviarWhatsAppOS(${os.id})"><i class="fab fa-whatsapp"></i></button></div></div>`; }); mostrarNotificacao(`${osClientes.length} OS carregadas`,'sucesso'); } catch(err){ mostrarNotificacao('Erro: '+err.message,'erro'); } }
+    window.verOSCliente = function(id) { const os = osClientes.find(o=>o.id===id); document.getElementById('modal-body').innerHTML = `<p><strong>Clínica:</strong> ${os?.clinica}</p><p><strong>Telefone:</strong> ${os?.telefone_cliente}</p><p><strong>Equipamento:</strong> ${os?.equipamento}</p><p><strong>Prioridade:</strong> ${os?.prioridade}</p><p><strong>Detalhe:</strong> ${os?.detalhe||'N/A'}</p>`; document.getElementById('modalOS').classList.add('active'); }
+    window.enviarWhatsAppOS = function(id) { const os = osClientes.find(o=>o.id===id); const tel = os?.telefone_cliente?.replace(/\D/g,''); if(tel) window.open(`https://wa.me/55${tel}?text=OS%20${os.id}%20-%20${os.equipamento}`,'_blank'); else mostrarNotificacao('Telefone não encontrado','erro'); }
+    window.enviarMsgParaTodos = function() { const msg = prompt('Mensagem para todos:'); if(msg) osClientes.forEach(os=>{ if(os.telefone_cliente) window.open(`https://wa.me/55${os.telefone_cliente.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank'); }); }
+    
+    // ==================== DASHBOARD ====================
+    function atualizarDashboard() { document.getElementById('total-clientes').textContent = clientes.length; document.getElementById('total-os-dash').textContent = manutencoes.length + osClientes.length; document.getElementById('total-andamento-dash').textContent = osClientes.filter(o=>o.status!=='Finalizado').length; document.getElementById('total-faturas-dash').textContent = faturas.length; const container = document.getElementById('lista-recentes'); const recentes = [...osClientes].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5); if(recentes.length===0 && manutencoes.length===0) container.innerHTML='<div class="item-lista">Nenhuma OS recente</div>'; else { container.innerHTML=''; recentes.forEach(os=>{ container.innerHTML+=`<div class="item-lista"><div><h4>${os.clinica} - ${os.equipamento}</h4><p>${new Date(os.created_at).toLocaleString()}</p></div><div><button class="btn-acao" onclick="verOSCliente(${os.id})">Ver</button></div></div>`; }); } }
+    
+    // ==================== ORÇAMENTO EVENT LISTENERS ====================
+    document.getElementById('orcClienteTelefone')?.addEventListener('input', function(e) { e.target.value = orcMascaraTelefone(e.target.value); });
+    document.getElementById('orcBtnAdicionarPeca')?.addEventListener('click', () => { let nome = document.getElementById('orcNomePeca').value.trim(); let valorStr = document.getElementById('orcValorPeca').value.trim(); let qtd = parseInt(document.getElementById('orcQtdPeca').value); if(!nome){ mostrarNotificacao('Informe o nome da peça','erro'); return; } let valorNum = parseMoneyToFloat(valorStr); if(isNaN(valorNum)||valorNum<=0){ mostrarNotificacao('Valor inválido','erro'); return; } if(isNaN(qtd)||qtd<1) qtd=1; orcListaPecas.push({nome, valor:valorNum, quantidade:qtd}); orcRenderTabelaPecas(); document.getElementById('orcNomePeca').value=''; document.getElementById('orcValorPeca').value=''; document.getElementById('orcQtdPeca').value='1'; });
+    document.getElementById('orcMaoDeObra')?.addEventListener('input',()=> orcAtualizarTotais());
+    document.getElementById('orcBtnGerarOrcamento')?.addEventListener('click', () => { const r = orcGerarHtmlOrcamento(); if(!r) return; orcUltimoOrcamentoHtml = r.html; document.getElementById('orcPreviewConteudo').innerHTML = orcUltimoOrcamentoHtml; document.getElementById('orcPreviewOrcamento').style.display = 'block'; document.getElementById('orcPreviewOrcamento').scrollIntoView({ behavior: 'smooth' }); });
+    document.getElementById('orcBtnImprimirPDF')?.addEventListener('click', () => { let conteudo = orcUltimoOrcamentoHtml; if(!conteudo){ const r = orcGerarHtmlOrcamento(); if(!r) return; conteudo = r.html; document.getElementById('orcPreviewConteudo').innerHTML = conteudo; document.getElementById('orcPreviewOrcamento').style.display = 'block'; } const win = window.open('','_blank'); win.document.write(`<html><head><title>Orçamento ONS</title><style>body{font-family:monospace;padding:30px;}</style></head><body>${conteudo}</body></html>`); win.document.close(); win.print(); });
+    document.getElementById('orcBtnWhatsApp')?.addEventListener('click', () => { let tel = document.getElementById('orcClienteTelefone').value.trim().replace(/\D/g,''); if(!tel){ mostrarNotificacao('Informe o telefone do cliente','erro'); return; } let r = orcGerarHtmlOrcamento(); if(!r) return; const msg = `Olá ${r.nomeCliente}, seu orçamento ONS Eletrotécnica está pronto! Total: ${formatMoney(r.totalGeral)}.`; window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`,'_blank'); });
+    
+    const orcRadios = document.querySelectorAll('input[name="orcTipoServico"]');
+    orcRadios.forEach(radio => { radio.addEventListener('change', (e) => { orcCurrentServiceType = e.target.value; orcRenderizarCamposDinamicos(); }); });
+    
+    // ==================== RELÓGIO E STATUS ====================
+    function atualizarRelogio() { const r = document.getElementById('relogio'); if(r) r.innerHTML = new Date().toLocaleTimeString('pt-BR'); }
+    setInterval(atualizarRelogio, 1000); atualizarRelogio();
+    
+    function updateOfflineStatus() { const s = document.getElementById('statusConexaoBar'); if(!navigator.onLine && s) s.innerHTML = 'Offline 💾'; else if(s) s.innerHTML = 'Online ☁️'; }
+    window.addEventListener('online', updateOfflineStatus); window.addEventListener('offline', updateOfflineStatus); updateOfflineStatus();
+    
+    document.getElementById('cliente-telefone')?.addEventListener('input', e => e.target.value = formatarTelefone(e.target.value));
+    document.getElementById('modalOS').addEventListener('click', e => { if(e.target === document.getElementById('modalOS')) fecharModal(); });
+    document.getElementById('modalAuditoria').addEventListener('click', e => { if(e.target === document.getElementById('modalAuditoria')) fecharModalAuditoria(); });
+    
+    // ==================== INIT ====================
+    carregarDadosLocais();
+    carregarClientesSelect();
+    carregarListaClientes();
+    mostrarEquipamentos();
+    carregarHistorico();
+    carregarOSClientes();
+    atualizarDashboard();
+    carregarSelectOSFaturamento();
+    carregarHistoricoFaturas();
+    orcRenderizarCamposDinamicos();
+    orcRenderTabelaPecas();
+    orcAtualizarTotais();
+    
+    ['valor-hora','horas-trabalhadas','pix-chave','obs-pagamento','num-documento'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', () => atualizarDocumento()); });
+    document.querySelectorAll('input[name="forma-exibicao"], input[name="pagamento-tipo"]').forEach(radio => radio.addEventListener('change', () => { togglePixCampo(); atualizarDocumento(); }));
+    
+    console.log('⚡ ONS Eletrotécnica - Modo Windows 95 Classic ativado!');
 </script>
 </body>
 </html>
