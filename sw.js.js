@@ -1,22 +1,14 @@
-const CACHE_NAME = 'ons-sistemas-v1';
-const urlsToCache = [
-  './',
-  './index.html',
-  './odonto.html',
-  './eletrica.html',
-  './manifest.json'
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
-});
+:root {
+    /* Cores Windows 95 */
+    --cinza-win95: #c0c0c0;
+    --azul-escuro-win: #000080;
+    --teal-fundo: #008080;
+    --texto-preto: #000000;
+    
+    /* Cores da Nota de 200 (Lobo-Guará) */
+    --cinza-nota: #a8a9ad;
+    --marrom-lobo: #8b5a2b;
+    --verde-nota: #6b8e23;
+    
+    --sombra-retro: 2px 2px 0px #ffffff inset, -2px -2px 0px #808080 inset;
+}

@@ -1,24 +1,20 @@
-{
-  "name": "ONS Sistemas",
-  "short_name": "ONS",
-  "description": "Sistema de Manutenção Odontológica e Elétrica",
-  "start_url": "index.html",
+]{
+  "name": "ONS Financeiro 95",
+  "short_name": "ONS95",
+  "description": "Controle financeiro pessoal com estilo Windows 95",
+  "start_url": "/index.html",
   "display": "standalone",
-  "theme_color": "#008080",
   "background_color": "#008080",
+  "theme_color": "#000080",
   "icons": [
     {
-      "src": "icons/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
